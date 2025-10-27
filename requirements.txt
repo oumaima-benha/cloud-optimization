@@ -1,0 +1,5 @@
+dataclasses; python_version < "3.7"
+numpy
+pandas
+matplotlib
+pytest
