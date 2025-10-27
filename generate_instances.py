@@ -1,43 +1,141 @@
 import json
 import random
-from data_model import Service, MachineType, Region, Flow, Instance
+import os
+from data_model import Service, MachineType, Region, Flow, Instance, Placement
+from evaluate import evaluate
 
-def generate_small_example(path="instances/small_example.json"):
-    services = {
-        "s1": Service(id="s1", cpu=1.0, mem=1.0, storage=10.0, allowed_regions=["r1","r2"], zone="internal"),
-        "s2": Service(id="s2", cpu=0.5, mem=0.5, storage=5.0, allowed_regions=["r1"], zone="public"),
-        "s3": Service(id="s3", cpu=2.0, mem=2.0, storage=20.0, allowed_regions=["r2"], zone="restricted"),
+
+def generate_instance(nb_services=5, nb_regions=3, nb_machines=3):
+    """
+    Génère une instance aléatoire mais cohérente avec des types de machines nommés (m_small, m_medium, etc.)
+    """
+
+    path = "instances/example_instance{}{}{}.json".format(nb_services, nb_regions, nb_machines)
+
+    random.seed()  # réinitialisation de la graine pour variabilité
+
+    # === 1️ Régions ===
+    regions = {f"r{i+1}": Region(id=f"r{i+1}") for i in range(nb_regions)}
+
+    # === 2️ Types de machines (choisis parmi un catalogue connu) ===
+    # On définit un catalogue réaliste
+    machine_catalogue = {
+        "m_micro":   {"cpu": 1.0,  "mem": 1.0,  "storage": 20.0,  "bandwidth": 50.0},
+        "m_small":   {"cpu": 2.0,  "mem": 4.0,  "storage": 100.0, "bandwidth": 100.0},
+        "m_medium":  {"cpu": 4.0,  "mem": 8.0,  "storage": 200.0, "bandwidth": 200.0},
+        "m_large":   {"cpu": 8.0,  "mem": 16.0, "storage": 400.0, "bandwidth": 400.0},
+        "m_xlarge":  {"cpu": 16.0, "mem": 32.0, "storage": 800.0, "bandwidth": 800.0},
     }
+
+    # On sélectionne aléatoirement nb_machines types parmi le catalogue
+    chosen_types = random.sample(list(machine_catalogue.keys()), k=min(nb_machines, len(machine_catalogue)))
     machines = {
-        "m_small": MachineType(id="m_small", cpu=4.0, mem=8.0, storage=100.0, bandwidth=100.0),
-        "m_medium": MachineType(id="m_medium", cpu=8.0, mem=16.0, storage=500.0, bandwidth=500.0)
+        name: MachineType(id=name, **machine_catalogue[name])
+        for name in chosen_types
     }
-    regions = {
-        "r1": Region(id="r1"),
-        "r2": Region(id="r2")
+
+    # === 3️ Services ===
+    zones = ["internal", "public", "restreint"]
+    services = {}
+    for i in range(nb_services):
+        s_id = f"s{i+1}"
+        cpu = round(random.uniform(0.5, 4.0), 2)
+        mem = round(random.uniform(0.5, 8.0), 2)
+        storage = round(random.uniform(5.0, 100.0), 2)
+        allowed_regions = random.sample(list(regions.keys()), k=random.randint(1, nb_regions))
+        zone = random.choice(zones)
+        sla = random.choice([99.9, 99.95, 99.99, 99.999])
+        services[s_id] = Service(
+            id=s_id,
+            cpu=cpu,
+            mem=mem,
+            storage=storage,
+            allowed_regions=allowed_regions,
+            zone=zone,
+            sla=sla
+        )
+
+    # === 4️ Flux réseau ===
+    flows = []
+    nb_flows = random.randint(nb_services, nb_services * 2)
+    for _ in range(nb_flows):
+        src, dst = random.sample(list(services.keys()), 2)
+        bw = round(random.uniform(1.0, 15.0), 2)  # Mbps
+        latency_max = random.choice([30, 50, 80, 100])
+        encryption_required = random.choice([True, False])
+        flows.append(Flow(src=src, dst=dst, bw=bw, latency_max=latency_max, encryption_required=encryption_required))
+
+    # === 5️ Latence & coûts réseau inter-régions ===
+    latency = {}
+    transfer_cost = {}
+    for r1 in regions:
+        for r2 in regions:
+            if r1 == r2:
+                latency[(r1, r2)] = 5.0
+                transfer_cost[(r1, r2)] = 0.0
+            else:
+                latency[(r1, r2)] = round(random.uniform(20.0, 100.0), 2)
+                transfer_cost[(r1, r2)] = round(random.uniform(0.01, 0.05), 3)
+
+    # === 6️ Règles de sécurité ===
+    security_rules = {
+        ("internal", "public"): True,
+        ("public", "internal"): True,
+        ("internal", "restreint"): False,
+        ("restreint", "public"): False,
+        ("restreint", "internal"): True,
     }
-    flows = [
-        Flow(src="s1", dst="s2", bw=5.0, latency_max=100.0, encryption_required=False),
-        Flow(src="s2", dst="s3", bw=1.0, latency_max=50.0, encryption_required=True),
-    ]
-    latency = {("r1","r1"):5.0, ("r2","r2"):5.0, ("r1","r2"):50.0, ("r2","r1"):50.0}
-    transfer_cost = {("r1","r2"):0.05, ("r2","r1"):0.05, ("r1","r1"):0.0, ("r2","r2"):0.0}
-    security_rules = {("internal","public"):True, ("public","restricted"):False}
-    inst = Instance(services=services, machines=machines, regions=regions,
-                    flows=flows, latency=latency, transfer_cost=transfer_cost,
-                    security_rules=security_rules)
+
+    # === 7️ Création de l'instance ===
+    instance = Instance(
+        services=services,
+        machines=machines,
+        regions=regions,
+        flows=flows,
+        latency=latency,
+        transfer_cost=transfer_cost,
+        security_rules=security_rules
+    )
+
+    # === 8️ Sauvegarde JSON ===
+    os.makedirs("instances", exist_ok=True)
+    data = {
+        "services": {sid: vars(s) for sid, s in services.items()},
+        "machines": {mid: vars(m) for mid, m in machines.items()},
+        "regions": list(regions.keys()),
+        "flows": [vars(f) for f in flows],
+    }
+
     with open(path, "w") as f:
-        # naive serialization: convert dataclasses to dicts
-        json.dump({
-            "services": {k: v.__dict__ for k,v in services.items()},
-            "machines": {k: v.__dict__ for k,v in machines.items()},
-            "regions": list(regions.keys()),
-            "flows": [f.__dict__ for f in flows],
-            "latency": {f"{a}|{b}":lat for (a,b),lat in latency.items()},
-            "transfer_cost": {f"{a}|{b}":c for (a,b),c in transfer_cost.items()},
-            "security_rules": {f"{a}|{b}":val for (a,b),val in security_rules.items()}
-        }, f, indent=2)
+        json.dump(data, f, indent=2)
+    print(f"✅ Instance sauvegardée dans {path}")
+
+    return instance
+
+
+def test_basic_solution(instance):
+    """
+    Crée une solution de placement simple et évalue son coût.
+    """
+    placement = Placement()
+    region_list = list(instance.regions.keys())
+    machine_list = list(instance.machines.keys())
+
+    for s_id in instance.services:
+        r = random.choice(region_list)
+        m = random.choice(machine_list)
+        placement.placement[s_id] = (m, r)
+        placement.redundancy[s_id] = random.choice([1, 2])
+    for f in instance.flows:
+        placement.encryption[(f.src, f.dst)] = f.encryption_required
+
+    total, details = evaluate(instance, placement)
+    print("\n=== Évaluation d'une solution basique ===")
+    print(f"Coût total = {total}")
+    for k, v in details.items():
+        print(f"{k:25s}: {v}")
+
 
 if __name__ == "__main__":
-    generate_small_example()
-    print("small_example.json generated in instances/")
+    instance = generate_instance(nb_services=6, nb_regions=3, nb_machines=4)
+    test_basic_solution(instance)
