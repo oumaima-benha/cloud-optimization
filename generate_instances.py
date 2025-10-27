@@ -9,7 +9,6 @@ def generate_instance(nb_services=5, nb_regions=3, nb_machines=3):
     """
     Génère une instance aléatoire mais cohérente avec des types de machines nommés (m_small, m_medium, etc.)
     """
-
     path = "instances/example_instance{}{}{}.json".format(nb_services, nb_regions, nb_machines)
 
     random.seed()  # réinitialisation de la graine pour variabilité
@@ -134,8 +133,3 @@ def test_basic_solution(instance):
     print(f"Coût total = {total}")
     for k, v in details.items():
         print(f"{k:25s}: {v}")
-
-
-if __name__ == "__main__":
-    instance = generate_instance(nb_services=6, nb_regions=3, nb_machines=4)
-    test_basic_solution(instance)
