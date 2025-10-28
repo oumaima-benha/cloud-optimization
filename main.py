@@ -1,6 +1,7 @@
 from generate_instances import generate_instance
 from algorithms.greedy import greedy_place
 from algorithms.simulated_annealing import simulated_annealing
+from algorithms.genetic import run_genetic
 from data_model import Placement
 from evaluate import evaluate
 import random
@@ -55,10 +56,12 @@ def main():
     afficher_placement(rand_place)
     print(f"Coût baseline = {rand_cost}")
 
+
+
     # ======================== Greedy ========================
     greedy_place_res = greedy_place(instance)
     greedy_cost, greedy_details = evaluate(instance, greedy_place_res)
-    print("\n======================== Greedy ========================")
+    print("\n======================== 1 - Algorithme Greedy ========================")
     afficher_placement(greedy_place_res)
     if greedy_cost == math.inf:
         print("Greedy solution infaisable")
@@ -73,15 +76,32 @@ def main():
         
     # ======================== Simulated Annealing ========================
     best_sa = simulated_annealing(instance)
-    best_cost, sa_details = evaluate(instance, best_sa)
-    print("\n======================== Simulated Annealing ========================")
+    best_cost_sa, sa_details = evaluate(instance, best_sa)
+    print("\n======================== 2 - Algorithme de recuit simulé ========================")
     afficher_placement(best_sa)
-    print(f"Coût SA = {best_cost}")
+    if best_cost_sa == math.inf:
+        print("Solution de Recuit Simulé infaisable")
+    else:
+        print(f"Coût SA = {best_cost_sa}")
     # Détail Recuit simulé
     print("\n--- Détails Recuit simulé ---")
     for k, v in sa_details.items():
         print(f"{k:25s}: {v}")
-
+        
+        
+    # ======================== Genetic Algorithm ========================
+    best_ga= run_genetic(instance)
+    best_cost_ga, ga_details = evaluate(instance, best_ga)
+    print("\n======================== 3 - Algorithme génétique ========================")
+    afficher_placement(best_ga)
+    if best_cost_ga == math.inf:
+        print("Solution Algorithme Génétique infaisable")
+    else:
+        print(f"Coût GA = {best_cost_ga}")
+    # Détail Algo génétique
+    print("\n--- Détails Algorithme génétique ---")
+    for k, v in ga_details.items():
+        print(f"{k:25s}: {v}")
 
 if __name__ == "__main__":
     main()
