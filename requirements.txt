@@ -1,5 +1,5 @@
 numpy
 pandas
 matplotlib
-pytest
+pytest>=8.0
 seaborn

@@ -46,3 +46,10 @@ cloud_optimization/
 ```bash
 git clone https://github.com/<ton_nom>/cloud-placement-project.git
 cd cloud-placement-project
+
+
+
+### Tests unitaires
+Pour exécuter les tests :
+```bash
+python -m pytest -v

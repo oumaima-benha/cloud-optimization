@@ -1,0 +1,83 @@
+{
+  "services": {
+    "s1": {
+      "id": "s1",
+      "cpu": 3.12,
+      "mem": 2.0,
+      "storage": 53.76,
+      "allowed_regions": [
+        "r2",
+        "r1"
+      ],
+      "zone": "restreint",
+      "sla": 99.99
+    },
+    "s2": {
+      "id": "s2",
+      "cpu": 1.23,
+      "mem": 2.86,
+      "storage": 10.16,
+      "allowed_regions": [
+        "r2",
+        "r1"
+      ],
+      "zone": "public",
+      "sla": 99.9
+    },
+    "s3": {
+      "id": "s3",
+      "cpu": 3.58,
+      "mem": 3.5,
+      "storage": 86.07,
+      "allowed_regions": [
+        "r1",
+        "r2"
+      ],
+      "zone": "restreint",
+      "sla": 99.9
+    }
+  },
+  "machines": {
+    "m_micro": {
+      "id": "m_micro",
+      "cpu": 1.0,
+      "mem": 1.0,
+      "storage": 20.0,
+      "bandwidth": 50.0
+    }
+  },
+  "regions": [
+    "r1",
+    "r2"
+  ],
+  "flows": [
+    {
+      "src": "s3",
+      "dst": "s2",
+      "bw": 11.86,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s1",
+      "dst": "s2",
+      "bw": 13.01,
+      "latency_max": 50,
+      "encryption_required": true
+    },
+    {
+      "src": "s3",
+      "dst": "s1",
+      "bw": 10.45,
+      "latency_max": 80,
+      "encryption_required": true
+    },
+    {
+      "src": "s3",
+      "dst": "s2",
+      "bw": 14.9,
+      "latency_max": 50,
+      "encryption_required": false
+    }
+  ]
+}
