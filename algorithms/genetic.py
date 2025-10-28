@@ -1,8 +1,8 @@
 import random
 import math
 from typing import Tuple, List
-from data_model import Instance, Placement
-from evaluate import evaluate
+from utils.data_model import Instance, Placement
+from utils.evaluate import evaluate
 
 def random_individual(instance: Instance) -> Placement:
     """Crée un individu aléatoire (Placement) cohérent pour l'instance"""

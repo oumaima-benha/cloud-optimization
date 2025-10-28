@@ -1,7 +1,7 @@
 from typing import Tuple
 import math
-from data_model import Instance, Placement
-from evaluate import evaluate
+from utils.data_model import Instance, Placement
+from utils.evaluate import evaluate
 
 def greedy_place(instance: Instance) -> Placement:
     """

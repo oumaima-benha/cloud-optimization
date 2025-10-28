@@ -1,0 +1,242 @@
+{
+  "services": {
+    "s1": {
+      "id": "s1",
+      "cpu": 2.89,
+      "mem": 2.91,
+      "storage": 6.96,
+      "allowed_regions": [
+        "r2",
+        "r1"
+      ],
+      "zone": "public",
+      "sla": 99.9
+    },
+    "s2": {
+      "id": "s2",
+      "cpu": 2.08,
+      "mem": 0.75,
+      "storage": 97.02,
+      "allowed_regions": [
+        "r2",
+        "r1",
+        "r3"
+      ],
+      "zone": "restreint",
+      "sla": 99.9
+    },
+    "s3": {
+      "id": "s3",
+      "cpu": 1.16,
+      "mem": 6.68,
+      "storage": 12.79,
+      "allowed_regions": [
+        "r3"
+      ],
+      "zone": "restreint",
+      "sla": 99.95
+    },
+    "s4": {
+      "id": "s4",
+      "cpu": 3.05,
+      "mem": 3.96,
+      "storage": 77.07,
+      "allowed_regions": [
+        "r1"
+      ],
+      "zone": "public",
+      "sla": 99.99
+    },
+    "s5": {
+      "id": "s5",
+      "cpu": 1.0,
+      "mem": 7.41,
+      "storage": 51.84,
+      "allowed_regions": [
+        "r3",
+        "r2",
+        "r4",
+        "r1"
+      ],
+      "zone": "public",
+      "sla": 99.95
+    },
+    "s6": {
+      "id": "s6",
+      "cpu": 0.85,
+      "mem": 1.97,
+      "storage": 77.55,
+      "allowed_regions": [
+        "r1",
+        "r3"
+      ],
+      "zone": "restreint",
+      "sla": 99.9
+    },
+    "s7": {
+      "id": "s7",
+      "cpu": 1.84,
+      "mem": 1.89,
+      "storage": 37.31,
+      "allowed_regions": [
+        "r3"
+      ],
+      "zone": "restreint",
+      "sla": 99.99
+    },
+    "s8": {
+      "id": "s8",
+      "cpu": 3.86,
+      "mem": 7.27,
+      "storage": 84.49,
+      "allowed_regions": [
+        "r3"
+      ],
+      "zone": "restreint",
+      "sla": 99.95
+    }
+  },
+  "machines": {
+    "m_xlarge": {
+      "id": "m_xlarge",
+      "cpu": 16.0,
+      "mem": 32.0,
+      "storage": 800.0,
+      "bandwidth": 800.0
+    },
+    "m_large": {
+      "id": "m_large",
+      "cpu": 8.0,
+      "mem": 16.0,
+      "storage": 400.0,
+      "bandwidth": 400.0
+    },
+    "m_small": {
+      "id": "m_small",
+      "cpu": 2.0,
+      "mem": 4.0,
+      "storage": 100.0,
+      "bandwidth": 100.0
+    },
+    "m_medium": {
+      "id": "m_medium",
+      "cpu": 4.0,
+      "mem": 8.0,
+      "storage": 200.0,
+      "bandwidth": 200.0
+    }
+  },
+  "regions": [
+    "r1",
+    "r2",
+    "r3",
+    "r4"
+  ],
+  "flows": [
+    {
+      "src": "s2",
+      "dst": "s6",
+      "bw": 9.61,
+      "latency_max": 80,
+      "encryption_required": false
+    },
+    {
+      "src": "s4",
+      "dst": "s6",
+      "bw": 2.21,
+      "latency_max": 30,
+      "encryption_required": false
+    },
+    {
+      "src": "s3",
+      "dst": "s6",
+      "bw": 1.5,
+      "latency_max": 80,
+      "encryption_required": false
+    },
+    {
+      "src": "s2",
+      "dst": "s1",
+      "bw": 4.87,
+      "latency_max": 50,
+      "encryption_required": true
+    },
+    {
+      "src": "s2",
+      "dst": "s1",
+      "bw": 10.75,
+      "latency_max": 30,
+      "encryption_required": false
+    },
+    {
+      "src": "s4",
+      "dst": "s1",
+      "bw": 5.58,
+      "latency_max": 50,
+      "encryption_required": true
+    },
+    {
+      "src": "s6",
+      "dst": "s3",
+      "bw": 9.42,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s4",
+      "dst": "s5",
+      "bw": 9.18,
+      "latency_max": 50,
+      "encryption_required": true
+    },
+    {
+      "src": "s4",
+      "dst": "s5",
+      "bw": 1.17,
+      "latency_max": 30,
+      "encryption_required": true
+    },
+    {
+      "src": "s4",
+      "dst": "s8",
+      "bw": 10.3,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s4",
+      "dst": "s6",
+      "bw": 4.72,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s1",
+      "dst": "s5",
+      "bw": 7.56,
+      "latency_max": 30,
+      "encryption_required": false
+    },
+    {
+      "src": "s1",
+      "dst": "s2",
+      "bw": 6.49,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s1",
+      "dst": "s5",
+      "bw": 9.79,
+      "latency_max": 30,
+      "encryption_required": true
+    },
+    {
+      "src": "s7",
+      "dst": "s4",
+      "bw": 12.48,
+      "latency_max": 30,
+      "encryption_required": true
+    }
+  ]
+}

@@ -1,14 +1,14 @@
 import json
 import random
 import os
-from data_model import Service, MachineType, Region, Flow, Instance, Placement
-from evaluate import evaluate
+from utils.data_model import Service, MachineType, Region, Flow, Instance, Placement
+from utils.evaluate import evaluate
 
-
+"""
+    Cette fonction généree une instance (un probleme) aléatoire mais cohérente 
+    """
 def generate_instance(nb_services=5, nb_regions=3, nb_machines=3):
-    """
-    Génère une instance aléatoire mais cohérente avec des types de machines nommés (m_small, m_medium, etc.)
-    """
+    
     path = "instances/example_instance{}{}{}.json".format(nb_services, nb_regions, nb_machines)
 
     random.seed()  # réinitialisation de la graine pour variabilité

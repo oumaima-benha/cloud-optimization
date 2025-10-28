@@ -1,8 +1,8 @@
 import random
 import math
 from typing import Tuple
-from data_model import Instance, Placement
-from evaluate import evaluate
+from utils.data_model import Instance, Placement
+from utils.evaluate import evaluate
 from algorithms.greedy import greedy_place  # on peut démarrer depuis greedy si disponible
 
 def random_neighbor(placement: Placement, instance: Instance) -> Placement:
