@@ -1,0 +1,165 @@
+{
+  "services": {
+    "s1": {
+      "id": "s1",
+      "cpu": 1.58,
+      "mem": 0.69,
+      "storage": 18.51,
+      "allowed_regions": [
+        "r2",
+        "r3"
+      ],
+      "zone": "internal",
+      "sla": 99.99
+    },
+    "s2": {
+      "id": "s2",
+      "cpu": 3.96,
+      "mem": 2.76,
+      "storage": 81.53,
+      "allowed_regions": [
+        "r2",
+        "r3",
+        "r1"
+      ],
+      "zone": "internal",
+      "sla": 99.999
+    },
+    "s3": {
+      "id": "s3",
+      "cpu": 0.63,
+      "mem": 5.21,
+      "storage": 23.63,
+      "allowed_regions": [
+        "r3",
+        "r2"
+      ],
+      "zone": "restreint",
+      "sla": 99.999
+    },
+    "s4": {
+      "id": "s4",
+      "cpu": 1.31,
+      "mem": 6.46,
+      "storage": 18.86,
+      "allowed_regions": [
+        "r1",
+        "r3",
+        "r2"
+      ],
+      "zone": "public",
+      "sla": 99.99
+    },
+    "s5": {
+      "id": "s5",
+      "cpu": 1.35,
+      "mem": 2.88,
+      "storage": 33.71,
+      "allowed_regions": [
+        "r3",
+        "r1"
+      ],
+      "zone": "restreint",
+      "sla": 99.99
+    },
+    "s6": {
+      "id": "s6",
+      "cpu": 2.28,
+      "mem": 7.38,
+      "storage": 49.92,
+      "allowed_regions": [
+        "r3",
+        "r1",
+        "r2"
+      ],
+      "zone": "restreint",
+      "sla": 99.999
+    }
+  },
+  "machines": {
+    "m_large": {
+      "id": "m_large",
+      "cpu": 8.0,
+      "mem": 16.0,
+      "storage": 400.0,
+      "bandwidth": 400.0
+    },
+    "m_medium": {
+      "id": "m_medium",
+      "cpu": 4.0,
+      "mem": 8.0,
+      "storage": 200.0,
+      "bandwidth": 200.0
+    },
+    "m_xlarge": {
+      "id": "m_xlarge",
+      "cpu": 16.0,
+      "mem": 32.0,
+      "storage": 800.0,
+      "bandwidth": 800.0
+    }
+  },
+  "regions": [
+    "r1",
+    "r2",
+    "r3"
+  ],
+  "flows": [
+    {
+      "src": "s2",
+      "dst": "s3",
+      "bw": 4.26,
+      "latency_max": 30,
+      "encryption_required": true
+    },
+    {
+      "src": "s5",
+      "dst": "s4",
+      "bw": 3.83,
+      "latency_max": 30,
+      "encryption_required": true
+    },
+    {
+      "src": "s3",
+      "dst": "s1",
+      "bw": 5.91,
+      "latency_max": 80,
+      "encryption_required": true
+    },
+    {
+      "src": "s3",
+      "dst": "s1",
+      "bw": 12.79,
+      "latency_max": 50,
+      "encryption_required": true
+    },
+    {
+      "src": "s4",
+      "dst": "s5",
+      "bw": 5.34,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s3",
+      "dst": "s4",
+      "bw": 12.62,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s4",
+      "dst": "s5",
+      "bw": 9.25,
+      "latency_max": 30,
+      "encryption_required": true
+    },
+    {
+      "src": "s6",
+      "dst": "s2",
+      "bw": 12.75,
+      "latency_max": 100,
+      "encryption_required": false
+    }
+  ]
+}

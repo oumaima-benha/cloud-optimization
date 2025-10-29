@@ -394,8 +394,8 @@ Pour une instance : nb_services=300, nb_regions=140, nb_machines=150
 | Algorithme génétique | 205734.048572 | 1.342 |
 
 
-![Diagramme du modèle](/results/Figure_1_nb_services=300_nb_regions=140_nb_machines=150.png)
-![Diagramme du modèle](/results/Figure_2_nb_services=300_nb_regions=140_nb_machines=150.png)
+![Comparaison des coûts](/results/Figure_1_nb_services=300_nb_regions=140_nb_machines=150.png)
+![Comparaison du temps d'exéc](/results/Figure_2_nb_services=300_nb_regions=140_nb_machines=150.png)
 
 ---
 Et pour une instance : nb_services=500, nb_regions=120, nb_machines=200
@@ -407,8 +407,8 @@ Et pour une instance : nb_services=500, nb_regions=120, nb_machines=200
 | Recuit simulé | 269491.114653 | 167.845 |
 | Algorithme génétique | 371297.544809 | 2.599 |
 
-![Diagramme du modèle](/results/Figure_1_nb_services=500_nb_regions=120_nb_machines=200.png)
-![Diagramme du modèle](/results/Figure_2_nb_services=500_nb_regions=120_nb_machines=200.png)
+![Comparaison des coûts](/results/Figure_1_nb_services=500_nb_regions=120_nb_machines=200.png)
+![Comparaison du temps d'exéc](/results/Figure_2_nb_services=500_nb_regions=120_nb_machines=200.png)
 ---
 ## 📈 Analyse des résultats
 La première remarque essentielle est qu’il est nécessaire de remplacer les fonctions « boîtes noires » utilisées pour le calcul des coûts par leurs véritables implémentations, afin d’obtenir une estimation plus réaliste des coûts partiels et du coût total. En effet, dans la version actuelle, ces fonctions ne sont que des placeholders permettant simplement d’exécuter et de tester les algorithmes, ce qui ne fournit pas des valeurs de coûts exactes.
@@ -425,6 +425,81 @@ Cette différence de performance s’explique par la complexité algorithmique p
 
 ---
 
+## Phase 9 – Analyse de sensibilité des paramètres
+
+## Recuit simulé (Simulated Annealing)
+
+### **Figure 1 – Heatmap : Influence de T₀ et α sur le coût moyen**
+![Heatmap Recuit Simulé](/results/Figure_1.png)
+La première figure illustre la variation du coût moyen obtenu en fonction de la **température initiale (T₀)** et du **facteur de refroidissement (α)**.  
+On observe que :
+- Une **température initiale trop basse (T₀ = 500)** donne souvent des coûts élevés : l’algorithme explore moins bien l’espace de recherche et risque de rester bloqué dans un minimum local.  
+- Une **valeur intermédiaire ou élevée de T₀ (1000–2000)** combinée à un **facteur α ≈ 0.85–0.9** donne les **meilleurs compromis coût/temps**.  
+- Des valeurs de α trop faibles (0.8) refroidissent trop rapidement le système, limitant l’exploration et dégradant la qualité des solutions.
+
+✅ **Conclusion :**
+Le recuit simulé est sensible au couple *(T₀, α)*.  
+Un bon équilibre entre exploration et exploitation se situe typiquement autour de :
+```
+T₀ ≈ 1000 – 2000
+α ≈ 0.85 – 0.9
+```
+Ces paramètres permettent une convergence plus douce et un coût moyen minimal.
+
+---
+
+### **Figure 2 – Évolution du coût moyen en fonction de T₀**
+![Évolution du coût moyen en fonction de T₀](/results/Figure_2.png)
+
+Cette courbe confirme la tendance précédente :  
+le coût moyen décroît nettement lorsque T₀ augmente de 500 à 1000, puis se stabilise au-delà de 1000.  
+Cela traduit une **amélioration initiale grâce à une exploration plus large**, suivie d’un **rendement marginal décroissant** quand la température devient trop haute.
+
+---
+
+## Algorithme génétique (Genetic Algorithm)
+
+### **Figure 3 – Heatmap : Influence de la taille de population et du taux de mutation**
+![Heatmap GA](/results/Figure_1_GA.png)
+La heatmap met en évidence deux observations :
+- Une **plus grande population (pop_size 20–30)** tend à améliorer la qualité du résultat (coût plus faible), car elle augmente la diversité génétique.  
+- Un **taux de mutation modéré (0.1)** donne souvent les meilleurs résultats :  
+  - Trop bas (0.05) → risque de stagnation prématurée,  
+  - Trop haut (0.2) → trop de perturbations, perte de convergence.  
+
+✅ **Conclusion :**
+Les meilleurs compromis sont atteints pour :
+```
+pop_size ≈ 20–30
+mutation_rate ≈ 0.1
+```
+Le modèle est donc plus stable avec une diversité génétique modérée et un taux de mutation équilibré.
+
+---
+
+### **Figure 4 – Évolution du coût moyen selon la taille de la population**
+![Évolution du coût moyen selon la taille de la population](/results/Figure_2_GA.png)
+
+Cette courbe illustre une **tendance décroissante du coût moyen** quand la population augmente.  
+Cela confirme que **plus de diversité dans la population initiale améliore la qualité moyenne des solutions**, bien que le temps de calcul augmente légèrement.
+
+---
+
+## 🧩 Interprétation globale
+
+| Algorithme | Paramètres clés | Observation principale | Zone optimale |
+|-------------|----------------|------------------------|----------------|
+| Recuit simulé | T₀, α | Trop faible → minimum local ; trop élevé → convergence lente | T₀ = 1000–2000 ; α = 0.85–0.9 |
+| Génétique | pop_size, mutation_rate | Trop faible → stagnation ; trop fort → instabilité | pop_size = 20–30 ; mutation_rate = 0.1 |
+
+---
+
+## 💬 Conclusion générale
+- Le **recuit simulé** offre une convergence stable et rapide, mais dépend fortement du calibrage thermique.  
+- L’**algorithme génétique** est plus robuste aux variations de paramètres, mais nécessite une population suffisante pour garantir la diversité.  
+- Dans les deux cas, la sensibilité est modérée mais significative : un mauvais réglage peut multiplier le coût final par 1.3 à 1.5.  
+Ces résultats montrent qu’une **phase de tuning automatique** pourrait encore améliorer la performance globale du système.
+---
 ## ⚠️ Limites et perspectives  
 
 Plusieurs améliorations sont envisageables :  

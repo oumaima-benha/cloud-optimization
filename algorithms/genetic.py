@@ -95,15 +95,12 @@ def mutate(ind: Placement, instance: Instance, mutation_rate: float = 0.1):
             key = (f.src, f.dst)
             ind.encryption[key] = not ind.encryption.get(key, f.encryption_required)
 
-def run_genetic(instance: Instance) -> Placement:
+def run_genetic(instance, pop_size=20, generations=50, mutation_rate=0.1, elite_count=2, seed=None) -> Placement:
     """
     Exécute l'algorithme génétique et retourne le meilleur individu trouvé
     """
-    #Les paramètres de l'AG
-    pop_size = 20
-    generations = 50
-    elite_count = 2
-    mutation_rate = 0.1
+    if seed is not None:
+        random.seed(seed)
     tournament_k = 3
 
     # 1) Initialisation

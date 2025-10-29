@@ -1,0 +1,1355 @@
+{
+  "services": {
+    "s1": {
+      "id": "s1",
+      "cpu": 0.61,
+      "mem": 3.15,
+      "storage": 33.65,
+      "allowed_regions": [
+        "r7",
+        "r4",
+        "r2",
+        "r1",
+        "r6",
+        "r10",
+        "r11",
+        "r5",
+        "r9"
+      ],
+      "zone": "public",
+      "sla": 99.999
+    },
+    "s2": {
+      "id": "s2",
+      "cpu": 1.39,
+      "mem": 6.92,
+      "storage": 72.0,
+      "allowed_regions": [
+        "r7",
+        "r3",
+        "r8",
+        "r10",
+        "r1",
+        "r9"
+      ],
+      "zone": "restreint",
+      "sla": 99.99
+    },
+    "s3": {
+      "id": "s3",
+      "cpu": 2.01,
+      "mem": 3.13,
+      "storage": 70.23,
+      "allowed_regions": [
+        "r12",
+        "r3",
+        "r9",
+        "r10",
+        "r11",
+        "r5",
+        "r7",
+        "r1",
+        "r4"
+      ],
+      "zone": "public",
+      "sla": 99.999
+    },
+    "s4": {
+      "id": "s4",
+      "cpu": 0.62,
+      "mem": 7.8,
+      "storage": 23.9,
+      "allowed_regions": [
+        "r2",
+        "r10",
+        "r5",
+        "r3",
+        "r1",
+        "r7"
+      ],
+      "zone": "internal",
+      "sla": 99.9
+    },
+    "s5": {
+      "id": "s5",
+      "cpu": 1.07,
+      "mem": 3.78,
+      "storage": 99.72,
+      "allowed_regions": [
+        "r7",
+        "r3",
+        "r4",
+        "r1",
+        "r11",
+        "r6",
+        "r10",
+        "r12",
+        "r9",
+        "r2"
+      ],
+      "zone": "restreint",
+      "sla": 99.999
+    },
+    "s6": {
+      "id": "s6",
+      "cpu": 1.03,
+      "mem": 4.57,
+      "storage": 51.59,
+      "allowed_regions": [
+        "r9",
+        "r4",
+        "r10"
+      ],
+      "zone": "public",
+      "sla": 99.9
+    },
+    "s7": {
+      "id": "s7",
+      "cpu": 2.35,
+      "mem": 1.99,
+      "storage": 17.27,
+      "allowed_regions": [
+        "r4",
+        "r10",
+        "r1"
+      ],
+      "zone": "public",
+      "sla": 99.999
+    },
+    "s8": {
+      "id": "s8",
+      "cpu": 3.93,
+      "mem": 6.07,
+      "storage": 90.18,
+      "allowed_regions": [
+        "r3",
+        "r7",
+        "r4",
+        "r11",
+        "r5",
+        "r9",
+        "r8"
+      ],
+      "zone": "public",
+      "sla": 99.99
+    },
+    "s9": {
+      "id": "s9",
+      "cpu": 3.79,
+      "mem": 3.69,
+      "storage": 50.29,
+      "allowed_regions": [
+        "r1",
+        "r11"
+      ],
+      "zone": "internal",
+      "sla": 99.99
+    },
+    "s10": {
+      "id": "s10",
+      "cpu": 3.13,
+      "mem": 5.33,
+      "storage": 8.29,
+      "allowed_regions": [
+        "r3",
+        "r7",
+        "r8"
+      ],
+      "zone": "internal",
+      "sla": 99.95
+    },
+    "s11": {
+      "id": "s11",
+      "cpu": 2.56,
+      "mem": 1.64,
+      "storage": 60.35,
+      "allowed_regions": [
+        "r7",
+        "r3"
+      ],
+      "zone": "restreint",
+      "sla": 99.999
+    },
+    "s12": {
+      "id": "s12",
+      "cpu": 2.62,
+      "mem": 4.23,
+      "storage": 93.91,
+      "allowed_regions": [
+        "r4",
+        "r8"
+      ],
+      "zone": "internal",
+      "sla": 99.9
+    },
+    "s13": {
+      "id": "s13",
+      "cpu": 2.1,
+      "mem": 1.25,
+      "storage": 66.83,
+      "allowed_regions": [
+        "r3",
+        "r9",
+        "r7",
+        "r11",
+        "r1",
+        "r12",
+        "r5"
+      ],
+      "zone": "public",
+      "sla": 99.9
+    },
+    "s14": {
+      "id": "s14",
+      "cpu": 0.84,
+      "mem": 4.82,
+      "storage": 84.61,
+      "allowed_regions": [
+        "r3",
+        "r12",
+        "r5",
+        "r10",
+        "r11",
+        "r2",
+        "r7",
+        "r1",
+        "r4",
+        "r8",
+        "r9"
+      ],
+      "zone": "public",
+      "sla": 99.95
+    },
+    "s15": {
+      "id": "s15",
+      "cpu": 3.98,
+      "mem": 7.25,
+      "storage": 30.98,
+      "allowed_regions": [
+        "r6",
+        "r10"
+      ],
+      "zone": "public",
+      "sla": 99.9
+    },
+    "s16": {
+      "id": "s16",
+      "cpu": 3.05,
+      "mem": 2.83,
+      "storage": 83.32,
+      "allowed_regions": [
+        "r5",
+        "r3"
+      ],
+      "zone": "restreint",
+      "sla": 99.99
+    },
+    "s17": {
+      "id": "s17",
+      "cpu": 2.88,
+      "mem": 0.81,
+      "storage": 96.95,
+      "allowed_regions": [
+        "r3",
+        "r6",
+        "r10",
+        "r7",
+        "r11",
+        "r9",
+        "r12",
+        "r2",
+        "r1",
+        "r4"
+      ],
+      "zone": "internal",
+      "sla": 99.999
+    },
+    "s18": {
+      "id": "s18",
+      "cpu": 2.13,
+      "mem": 5.2,
+      "storage": 28.07,
+      "allowed_regions": [
+        "r6",
+        "r10",
+        "r11",
+        "r4",
+        "r1",
+        "r3",
+        "r9",
+        "r12",
+        "r5",
+        "r8",
+        "r7"
+      ],
+      "zone": "restreint",
+      "sla": 99.99
+    },
+    "s19": {
+      "id": "s19",
+      "cpu": 1.47,
+      "mem": 5.46,
+      "storage": 44.27,
+      "allowed_regions": [
+        "r9",
+        "r8",
+        "r6",
+        "r5",
+        "r10",
+        "r11",
+        "r4",
+        "r1",
+        "r12"
+      ],
+      "zone": "internal",
+      "sla": 99.99
+    },
+    "s20": {
+      "id": "s20",
+      "cpu": 1.76,
+      "mem": 1.7,
+      "storage": 92.22,
+      "allowed_regions": [
+        "r12",
+        "r2",
+        "r11"
+      ],
+      "zone": "public",
+      "sla": 99.999
+    },
+    "s21": {
+      "id": "s21",
+      "cpu": 0.88,
+      "mem": 0.76,
+      "storage": 98.81,
+      "allowed_regions": [
+        "r8"
+      ],
+      "zone": "restreint",
+      "sla": 99.99
+    },
+    "s22": {
+      "id": "s22",
+      "cpu": 2.79,
+      "mem": 0.93,
+      "storage": 70.03,
+      "allowed_regions": [
+        "r12",
+        "r11",
+        "r2",
+        "r9",
+        "r10",
+        "r7",
+        "r3"
+      ],
+      "zone": "public",
+      "sla": 99.95
+    },
+    "s23": {
+      "id": "s23",
+      "cpu": 2.55,
+      "mem": 5.78,
+      "storage": 97.65,
+      "allowed_regions": [
+        "r11",
+        "r6"
+      ],
+      "zone": "restreint",
+      "sla": 99.95
+    },
+    "s24": {
+      "id": "s24",
+      "cpu": 1.91,
+      "mem": 4.43,
+      "storage": 57.79,
+      "allowed_regions": [
+        "r8",
+        "r10",
+        "r4",
+        "r12",
+        "r5",
+        "r9",
+        "r1",
+        "r11",
+        "r7"
+      ],
+      "zone": "public",
+      "sla": 99.95
+    },
+    "s25": {
+      "id": "s25",
+      "cpu": 3.27,
+      "mem": 7.72,
+      "storage": 13.5,
+      "allowed_regions": [
+        "r2",
+        "r9",
+        "r8",
+        "r10",
+        "r5",
+        "r3",
+        "r11",
+        "r7",
+        "r1",
+        "r6"
+      ],
+      "zone": "public",
+      "sla": 99.9
+    },
+    "s26": {
+      "id": "s26",
+      "cpu": 3.04,
+      "mem": 7.2,
+      "storage": 61.64,
+      "allowed_regions": [
+        "r1",
+        "r5",
+        "r10",
+        "r7"
+      ],
+      "zone": "restreint",
+      "sla": 99.99
+    },
+    "s27": {
+      "id": "s27",
+      "cpu": 1.79,
+      "mem": 3.91,
+      "storage": 54.53,
+      "allowed_regions": [
+        "r12",
+        "r6",
+        "r10",
+        "r5",
+        "r2",
+        "r9",
+        "r8",
+        "r1",
+        "r4"
+      ],
+      "zone": "restreint",
+      "sla": 99.9
+    },
+    "s28": {
+      "id": "s28",
+      "cpu": 2.7,
+      "mem": 2.52,
+      "storage": 10.11,
+      "allowed_regions": [
+        "r10",
+        "r5",
+        "r12"
+      ],
+      "zone": "internal",
+      "sla": 99.95
+    },
+    "s29": {
+      "id": "s29",
+      "cpu": 1.71,
+      "mem": 3.79,
+      "storage": 18.93,
+      "allowed_regions": [
+        "r10",
+        "r9",
+        "r7",
+        "r11",
+        "r3"
+      ],
+      "zone": "public",
+      "sla": 99.999
+    },
+    "s30": {
+      "id": "s30",
+      "cpu": 0.54,
+      "mem": 0.74,
+      "storage": 23.36,
+      "allowed_regions": [
+        "r4",
+        "r8"
+      ],
+      "zone": "restreint",
+      "sla": 99.95
+    },
+    "s31": {
+      "id": "s31",
+      "cpu": 3.5,
+      "mem": 2.87,
+      "storage": 25.91,
+      "allowed_regions": [
+        "r4"
+      ],
+      "zone": "public",
+      "sla": 99.999
+    },
+    "s32": {
+      "id": "s32",
+      "cpu": 0.54,
+      "mem": 6.52,
+      "storage": 68.51,
+      "allowed_regions": [
+        "r12",
+        "r10",
+        "r6"
+      ],
+      "zone": "restreint",
+      "sla": 99.99
+    },
+    "s33": {
+      "id": "s33",
+      "cpu": 0.89,
+      "mem": 1.31,
+      "storage": 80.39,
+      "allowed_regions": [
+        "r9",
+        "r12",
+        "r8",
+        "r10",
+        "r6",
+        "r11",
+        "r7"
+      ],
+      "zone": "restreint",
+      "sla": 99.9
+    },
+    "s34": {
+      "id": "s34",
+      "cpu": 2.3,
+      "mem": 3.14,
+      "storage": 54.97,
+      "allowed_regions": [
+        "r7"
+      ],
+      "zone": "internal",
+      "sla": 99.99
+    },
+    "s35": {
+      "id": "s35",
+      "cpu": 3.95,
+      "mem": 6.4,
+      "storage": 84.46,
+      "allowed_regions": [
+        "r1",
+        "r7",
+        "r10",
+        "r9"
+      ],
+      "zone": "restreint",
+      "sla": 99.9
+    },
+    "s36": {
+      "id": "s36",
+      "cpu": 2.85,
+      "mem": 7.12,
+      "storage": 9.34,
+      "allowed_regions": [
+        "r5",
+        "r11",
+        "r4",
+        "r9",
+        "r3",
+        "r6"
+      ],
+      "zone": "public",
+      "sla": 99.9
+    },
+    "s37": {
+      "id": "s37",
+      "cpu": 0.8,
+      "mem": 7.24,
+      "storage": 89.26,
+      "allowed_regions": [
+        "r12",
+        "r6"
+      ],
+      "zone": "internal",
+      "sla": 99.99
+    },
+    "s38": {
+      "id": "s38",
+      "cpu": 2.46,
+      "mem": 5.05,
+      "storage": 38.29,
+      "allowed_regions": [
+        "r3",
+        "r6",
+        "r10",
+        "r1",
+        "r8"
+      ],
+      "zone": "public",
+      "sla": 99.99
+    },
+    "s39": {
+      "id": "s39",
+      "cpu": 1.35,
+      "mem": 7.24,
+      "storage": 17.69,
+      "allowed_regions": [
+        "r12",
+        "r9",
+        "r10",
+        "r8"
+      ],
+      "zone": "internal",
+      "sla": 99.95
+    },
+    "s40": {
+      "id": "s40",
+      "cpu": 2.97,
+      "mem": 4.76,
+      "storage": 90.92,
+      "allowed_regions": [
+        "r6",
+        "r7",
+        "r12",
+        "r1",
+        "r8",
+        "r3",
+        "r5",
+        "r4",
+        "r9",
+        "r10"
+      ],
+      "zone": "restreint",
+      "sla": 99.95
+    },
+    "s41": {
+      "id": "s41",
+      "cpu": 1.19,
+      "mem": 7.89,
+      "storage": 9.26,
+      "allowed_regions": [
+        "r1",
+        "r8",
+        "r11",
+        "r7"
+      ],
+      "zone": "restreint",
+      "sla": 99.95
+    },
+    "s42": {
+      "id": "s42",
+      "cpu": 3.44,
+      "mem": 0.93,
+      "storage": 42.98,
+      "allowed_regions": [
+        "r4",
+        "r1",
+        "r7",
+        "r10",
+        "r6",
+        "r3",
+        "r2"
+      ],
+      "zone": "restreint",
+      "sla": 99.95
+    },
+    "s43": {
+      "id": "s43",
+      "cpu": 0.71,
+      "mem": 4.79,
+      "storage": 21.27,
+      "allowed_regions": [
+        "r4",
+        "r11",
+        "r6",
+        "r5",
+        "r2",
+        "r12",
+        "r1",
+        "r10",
+        "r3"
+      ],
+      "zone": "internal",
+      "sla": 99.9
+    },
+    "s44": {
+      "id": "s44",
+      "cpu": 3.46,
+      "mem": 1.39,
+      "storage": 32.23,
+      "allowed_regions": [
+        "r11",
+        "r3",
+        "r7",
+        "r12",
+        "r2",
+        "r1",
+        "r9",
+        "r5",
+        "r4",
+        "r8"
+      ],
+      "zone": "restreint",
+      "sla": 99.999
+    },
+    "s45": {
+      "id": "s45",
+      "cpu": 3.77,
+      "mem": 7.64,
+      "storage": 75.27,
+      "allowed_regions": [
+        "r5",
+        "r6",
+        "r10",
+        "r9",
+        "r11",
+        "r7",
+        "r4",
+        "r3"
+      ],
+      "zone": "public",
+      "sla": 99.95
+    },
+    "s46": {
+      "id": "s46",
+      "cpu": 3.86,
+      "mem": 6.6,
+      "storage": 22.79,
+      "allowed_regions": [
+        "r12",
+        "r5",
+        "r6",
+        "r3",
+        "r1"
+      ],
+      "zone": "restreint",
+      "sla": 99.999
+    },
+    "s47": {
+      "id": "s47",
+      "cpu": 1.79,
+      "mem": 2.57,
+      "storage": 69.34,
+      "allowed_regions": [
+        "r6",
+        "r8"
+      ],
+      "zone": "restreint",
+      "sla": 99.99
+    },
+    "s48": {
+      "id": "s48",
+      "cpu": 1.86,
+      "mem": 2.99,
+      "storage": 57.48,
+      "allowed_regions": [
+        "r3",
+        "r9",
+        "r11",
+        "r10",
+        "r1",
+        "r2",
+        "r6"
+      ],
+      "zone": "public",
+      "sla": 99.99
+    },
+    "s49": {
+      "id": "s49",
+      "cpu": 2.58,
+      "mem": 5.01,
+      "storage": 86.65,
+      "allowed_regions": [
+        "r7",
+        "r8",
+        "r9",
+        "r4",
+        "r6",
+        "r5",
+        "r2",
+        "r3"
+      ],
+      "zone": "internal",
+      "sla": 99.95
+    },
+    "s50": {
+      "id": "s50",
+      "cpu": 2.9,
+      "mem": 6.47,
+      "storage": 25.11,
+      "allowed_regions": [
+        "r1",
+        "r9",
+        "r8",
+        "r10",
+        "r11",
+        "r7",
+        "r5",
+        "r6"
+      ],
+      "zone": "restreint",
+      "sla": 99.9
+    }
+  },
+  "machines": {
+    "m_xlarge": {
+      "id": "m_xlarge",
+      "cpu": 16.0,
+      "mem": 32.0,
+      "storage": 800.0,
+      "bandwidth": 800.0
+    },
+    "m_small": {
+      "id": "m_small",
+      "cpu": 2.0,
+      "mem": 4.0,
+      "storage": 100.0,
+      "bandwidth": 100.0
+    },
+    "m_medium": {
+      "id": "m_medium",
+      "cpu": 4.0,
+      "mem": 8.0,
+      "storage": 200.0,
+      "bandwidth": 200.0
+    },
+    "m_micro": {
+      "id": "m_micro",
+      "cpu": 1.0,
+      "mem": 1.0,
+      "storage": 20.0,
+      "bandwidth": 50.0
+    },
+    "m_large": {
+      "id": "m_large",
+      "cpu": 8.0,
+      "mem": 16.0,
+      "storage": 400.0,
+      "bandwidth": 400.0
+    }
+  },
+  "regions": [
+    "r1",
+    "r2",
+    "r3",
+    "r4",
+    "r5",
+    "r6",
+    "r7",
+    "r8",
+    "r9",
+    "r10",
+    "r11",
+    "r12"
+  ],
+  "flows": [
+    {
+      "src": "s18",
+      "dst": "s2",
+      "bw": 9.78,
+      "latency_max": 50,
+      "encryption_required": false
+    },
+    {
+      "src": "s33",
+      "dst": "s11",
+      "bw": 9.52,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s44",
+      "dst": "s23",
+      "bw": 7.89,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s40",
+      "dst": "s17",
+      "bw": 12.99,
+      "latency_max": 50,
+      "encryption_required": true
+    },
+    {
+      "src": "s8",
+      "dst": "s47",
+      "bw": 10.08,
+      "latency_max": 30,
+      "encryption_required": false
+    },
+    {
+      "src": "s35",
+      "dst": "s18",
+      "bw": 9.06,
+      "latency_max": 80,
+      "encryption_required": true
+    },
+    {
+      "src": "s8",
+      "dst": "s44",
+      "bw": 3.22,
+      "latency_max": 80,
+      "encryption_required": true
+    },
+    {
+      "src": "s47",
+      "dst": "s49",
+      "bw": 11.28,
+      "latency_max": 50,
+      "encryption_required": false
+    },
+    {
+      "src": "s2",
+      "dst": "s9",
+      "bw": 2.37,
+      "latency_max": 50,
+      "encryption_required": false
+    },
+    {
+      "src": "s43",
+      "dst": "s32",
+      "bw": 5.26,
+      "latency_max": 50,
+      "encryption_required": false
+    },
+    {
+      "src": "s3",
+      "dst": "s43",
+      "bw": 14.62,
+      "latency_max": 50,
+      "encryption_required": false
+    },
+    {
+      "src": "s30",
+      "dst": "s42",
+      "bw": 6.24,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s46",
+      "dst": "s27",
+      "bw": 9.48,
+      "latency_max": 30,
+      "encryption_required": false
+    },
+    {
+      "src": "s6",
+      "dst": "s4",
+      "bw": 12.53,
+      "latency_max": 50,
+      "encryption_required": true
+    },
+    {
+      "src": "s30",
+      "dst": "s40",
+      "bw": 14.0,
+      "latency_max": 30,
+      "encryption_required": true
+    },
+    {
+      "src": "s10",
+      "dst": "s37",
+      "bw": 2.5,
+      "latency_max": 50,
+      "encryption_required": true
+    },
+    {
+      "src": "s15",
+      "dst": "s50",
+      "bw": 8.9,
+      "latency_max": 50,
+      "encryption_required": false
+    },
+    {
+      "src": "s49",
+      "dst": "s22",
+      "bw": 2.74,
+      "latency_max": 80,
+      "encryption_required": false
+    },
+    {
+      "src": "s38",
+      "dst": "s47",
+      "bw": 11.18,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s29",
+      "dst": "s44",
+      "bw": 14.97,
+      "latency_max": 80,
+      "encryption_required": false
+    },
+    {
+      "src": "s49",
+      "dst": "s7",
+      "bw": 8.45,
+      "latency_max": 30,
+      "encryption_required": true
+    },
+    {
+      "src": "s6",
+      "dst": "s37",
+      "bw": 13.44,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s2",
+      "dst": "s38",
+      "bw": 3.83,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s15",
+      "dst": "s9",
+      "bw": 8.12,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s9",
+      "dst": "s38",
+      "bw": 7.3,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s43",
+      "dst": "s35",
+      "bw": 14.74,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s13",
+      "dst": "s31",
+      "bw": 14.08,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s13",
+      "dst": "s49",
+      "bw": 6.43,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s20",
+      "dst": "s32",
+      "bw": 14.96,
+      "latency_max": 30,
+      "encryption_required": true
+    },
+    {
+      "src": "s8",
+      "dst": "s17",
+      "bw": 8.67,
+      "latency_max": 80,
+      "encryption_required": false
+    },
+    {
+      "src": "s47",
+      "dst": "s4",
+      "bw": 12.08,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s28",
+      "dst": "s23",
+      "bw": 10.49,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s43",
+      "dst": "s47",
+      "bw": 3.14,
+      "latency_max": 50,
+      "encryption_required": false
+    },
+    {
+      "src": "s26",
+      "dst": "s35",
+      "bw": 3.55,
+      "latency_max": 50,
+      "encryption_required": true
+    },
+    {
+      "src": "s20",
+      "dst": "s29",
+      "bw": 9.51,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s21",
+      "dst": "s24",
+      "bw": 9.2,
+      "latency_max": 80,
+      "encryption_required": false
+    },
+    {
+      "src": "s27",
+      "dst": "s45",
+      "bw": 8.92,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s33",
+      "dst": "s30",
+      "bw": 2.63,
+      "latency_max": 30,
+      "encryption_required": false
+    },
+    {
+      "src": "s15",
+      "dst": "s48",
+      "bw": 8.27,
+      "latency_max": 80,
+      "encryption_required": false
+    },
+    {
+      "src": "s42",
+      "dst": "s24",
+      "bw": 9.74,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s23",
+      "dst": "s26",
+      "bw": 7.3,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s23",
+      "dst": "s37",
+      "bw": 7.58,
+      "latency_max": 30,
+      "encryption_required": true
+    },
+    {
+      "src": "s34",
+      "dst": "s17",
+      "bw": 3.4,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s48",
+      "dst": "s9",
+      "bw": 10.57,
+      "latency_max": 50,
+      "encryption_required": false
+    },
+    {
+      "src": "s9",
+      "dst": "s20",
+      "bw": 6.32,
+      "latency_max": 30,
+      "encryption_required": false
+    },
+    {
+      "src": "s21",
+      "dst": "s16",
+      "bw": 14.58,
+      "latency_max": 80,
+      "encryption_required": false
+    },
+    {
+      "src": "s49",
+      "dst": "s37",
+      "bw": 4.74,
+      "latency_max": 30,
+      "encryption_required": true
+    },
+    {
+      "src": "s43",
+      "dst": "s50",
+      "bw": 11.43,
+      "latency_max": 80,
+      "encryption_required": true
+    },
+    {
+      "src": "s29",
+      "dst": "s20",
+      "bw": 7.54,
+      "latency_max": 80,
+      "encryption_required": false
+    },
+    {
+      "src": "s3",
+      "dst": "s4",
+      "bw": 1.23,
+      "latency_max": 80,
+      "encryption_required": true
+    },
+    {
+      "src": "s27",
+      "dst": "s32",
+      "bw": 12.06,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s39",
+      "dst": "s50",
+      "bw": 2.05,
+      "latency_max": 30,
+      "encryption_required": false
+    },
+    {
+      "src": "s6",
+      "dst": "s27",
+      "bw": 5.53,
+      "latency_max": 50,
+      "encryption_required": false
+    },
+    {
+      "src": "s21",
+      "dst": "s1",
+      "bw": 14.06,
+      "latency_max": 80,
+      "encryption_required": false
+    },
+    {
+      "src": "s41",
+      "dst": "s33",
+      "bw": 7.71,
+      "latency_max": 80,
+      "encryption_required": false
+    },
+    {
+      "src": "s49",
+      "dst": "s11",
+      "bw": 13.46,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s42",
+      "dst": "s25",
+      "bw": 6.58,
+      "latency_max": 50,
+      "encryption_required": false
+    },
+    {
+      "src": "s40",
+      "dst": "s5",
+      "bw": 11.13,
+      "latency_max": 50,
+      "encryption_required": true
+    },
+    {
+      "src": "s30",
+      "dst": "s9",
+      "bw": 6.81,
+      "latency_max": 50,
+      "encryption_required": true
+    },
+    {
+      "src": "s48",
+      "dst": "s44",
+      "bw": 14.48,
+      "latency_max": 80,
+      "encryption_required": false
+    },
+    {
+      "src": "s10",
+      "dst": "s50",
+      "bw": 4.63,
+      "latency_max": 80,
+      "encryption_required": false
+    },
+    {
+      "src": "s44",
+      "dst": "s23",
+      "bw": 11.51,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s18",
+      "dst": "s38",
+      "bw": 6.02,
+      "latency_max": 80,
+      "encryption_required": false
+    },
+    {
+      "src": "s38",
+      "dst": "s36",
+      "bw": 12.28,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s9",
+      "dst": "s46",
+      "bw": 1.89,
+      "latency_max": 80,
+      "encryption_required": true
+    },
+    {
+      "src": "s4",
+      "dst": "s47",
+      "bw": 3.56,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s32",
+      "dst": "s42",
+      "bw": 4.65,
+      "latency_max": 100,
+      "encryption_required": false
+    },
+    {
+      "src": "s21",
+      "dst": "s37",
+      "bw": 5.73,
+      "latency_max": 30,
+      "encryption_required": false
+    },
+    {
+      "src": "s25",
+      "dst": "s18",
+      "bw": 14.8,
+      "latency_max": 30,
+      "encryption_required": false
+    },
+    {
+      "src": "s1",
+      "dst": "s22",
+      "bw": 9.57,
+      "latency_max": 30,
+      "encryption_required": true
+    },
+    {
+      "src": "s33",
+      "dst": "s30",
+      "bw": 6.98,
+      "latency_max": 50,
+      "encryption_required": false
+    },
+    {
+      "src": "s46",
+      "dst": "s3",
+      "bw": 7.6,
+      "latency_max": 30,
+      "encryption_required": false
+    },
+    {
+      "src": "s49",
+      "dst": "s13",
+      "bw": 3.42,
+      "latency_max": 100,
+      "encryption_required": true
+    },
+    {
+      "src": "s4",
+      "dst": "s38",
+      "bw": 1.42,
+      "latency_max": 80,
+      "encryption_required": false
+    }
+  ]
+}

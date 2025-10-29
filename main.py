@@ -10,7 +10,7 @@ from utils.random_solution_generator import random_baseline
 
 def main():
     # ======================== 1️ Générer une instance ========================
-    instance = generate_instance(nb_services=500, nb_regions=120, nb_machines=200)
+    instance = generate_instance(nb_services=50, nb_regions=12, nb_machines=20)
 
     results = []  # pour stocker tous les résultats dans un DataFrame à la fin
 

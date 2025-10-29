@@ -49,7 +49,7 @@ def random_neighbor(placement: Placement, instance: Instance) -> Placement:
 
     return neigh
 
-def simulated_annealing(instance: Instance) -> Placement:
+def simulated_annealing(instance, T0=1000.0, Tmin=1.0, alpha=0.85, iter_per_T=50, max_evals=5000, seed=None) -> Placement:
     """
     Paramètres :
       - T0 : température initiale
@@ -59,11 +59,8 @@ def simulated_annealing(instance: Instance) -> Placement:
       - max_evals : nombre maximal d'évaluations (sécurité)
     """
     
-    T0 = 1000.0
-    Tmin = 1.0
-    alpha = 0.85
-    iter_per_T = 50
-    max_evals = 5000                        
+    if seed is not None:
+        random.seed(seed)                       
         
     current = greedy_place(instance)
 
