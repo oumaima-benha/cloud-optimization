@@ -99,21 +99,6 @@ pip install -r requirements.txt
 ## Phase 1 – Modélisation  
 
 Avant la phase de codage, une **modélisation mathématique manuelle** du problème a été réalisée afin de clarifier les variables, contraintes et fonctions de coût.
-
-📎 [Voir le document PDF de modélisation](modélisation.pdf)
-
-Ce document contient :
-- Une **formulation en variables de décision** :  
-  - `x_{s,m,r} = 1` si le service *s* est placé sur la machine *m* dans la région *r*, sinon `0`.  
-  - `enc_{i,j} = 1` si le flux entre les services *i* et *j* est chiffré, sinon `0`.
-- Les **contraintes principales** :  
-  - Capacité CPU, mémoire, stockage, bande passante.  
-  - Contraintes de sécurité et de zones.  
-  - Contraintes de latence et de disponibilité.  
-  - Contraintes géographiques (régions autorisées).  
-- La **fonction objectif** :  
-  Minimiser la somme pondérée des coûts de machine, stockage, réseau, sécurité, conformité, etc.
-
 L’objectif de cette modélisation était de fournir une base claire et rigoureuse avant le développement des algorithmes de solution.  
 
 
