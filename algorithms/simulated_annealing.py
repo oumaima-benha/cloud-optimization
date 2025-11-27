@@ -3,15 +3,15 @@ import math
 from typing import Tuple
 from utils.data_model import Instance, Placement
 from utils.evaluate import evaluate
-from algorithms.greedy import greedy_place  # on peut démarrer depuis greedy si disponible
+from algorithms.greedy import greedy_place  # we can start from greedy if available
 
 def random_neighbor(placement: Placement, instance: Instance) -> Placement:
     """
-    Génère un voisin en effectuant une petite modification aléatoire :
-    - déplacer un service vers une autre (machine,region) 
-    - ou changer la redondance d'un service (1..3) 
-    - ou changer le chiffrement d'un flux
-    On renvoie une copie modifiée de placement
+    Generates a neighbor by making a small random modification:
+    - move a service to another (machine, region)
+    - or change the redundancy of a service (1..3)
+    - or change the encryption of a flow
+    Returns a modified copy of placement
     """
     neigh = placement.copy()
     services = list(instance.services.keys())
@@ -21,9 +21,9 @@ def random_neighbor(placement: Placement, instance: Instance) -> Placement:
     move_type = random.choice(["move_service", "change_redundancy", "toggle_encryption"])
     if move_type == "move_service" and services:
         s = random.choice(services)
-        # choisir machine et région valides (préférence aux allowed_regions)
+        # choose valid machine and region (prefer allowed_regions)
         svc = instance.services[s]
-        # si service a allowed_regions, on choisit dedans sinon dans toutes
+        # if service has allowed_regions, choose from them, otherwise from all
         possible_regions = svc.allowed_regions if svc.allowed_regions else regions
         new_r = random.choice(possible_regions)
         new_m = random.choice(machines)
@@ -38,7 +38,7 @@ def random_neighbor(placement: Placement, instance: Instance) -> Placement:
         current = neigh.encryption.get(key, f.encryption_required)
         neigh.encryption[key] = not current
     else:
-        # fallback : déplacer un service si rien d'autre possible
+        # fallback: move a service if nothing else is possible
         if services:
             s = random.choice(services)
             svc = instance.services[s]
@@ -51,12 +51,12 @@ def random_neighbor(placement: Placement, instance: Instance) -> Placement:
 
 def simulated_annealing(instance, T0=1000.0, Tmin=1.0, alpha=0.85, iter_per_T=50, max_evals=5000, seed=None) -> Placement:
     """
-    Paramètres :
-      - T0 : température initiale
-      - Tmin : température finale
-      - alpha : facteur de refroidissement (0 < alpha < 1)
-      - iter_per_T : nombre d'itérations par palier de température
-      - max_evals : nombre maximal d'évaluations (sécurité)
+    Parameters:
+      - T0 : initial temperature
+      - Tmin : final temperature
+      - alpha : cooling factor (0 < alpha < 1)
+      - iter_per_T : number of iterations per temperature level
+      - max_evals : maximum number of evaluations (safety)
     """
     
     if seed is not None:
@@ -69,13 +69,13 @@ def simulated_annealing(instance, T0=1000.0, Tmin=1.0, alpha=0.85, iter_per_T=50
     best_cost = current_cost
 
     T = T0
-    evals = 1  # on a déjà évalué l'initiale
+    evals = 1  # the initial placement has already been evaluated
 
     while T > Tmin and evals < max_evals:
         for _ in range(iter_per_T):
             if evals >= max_evals:
                 break
-            # générer voisin et évaluer
+            # generate neighbor and evaluate
             neighbor = random_neighbor(current, instance)
             neighbor_cost, _ = evaluate(instance, neighbor)
             evals += 1
@@ -86,14 +86,14 @@ def simulated_annealing(instance, T0=1000.0, Tmin=1.0, alpha=0.85, iter_per_T=50
             delta = neighbor_cost - current_cost
 
             if neighbor_cost < current_cost:
-                # amélioration -> accepter
+                # improvement -> accept
                 current = neighbor
                 current_cost = neighbor_cost
                 if neighbor_cost < best_cost:
                     best = neighbor.copy()
                     best_cost = neighbor_cost
             else:
-                # accepter avec probabilité exp(-delta / T)
+                # accept with probability exp(-delta / T)
                 try:
                     prob = math.exp(-delta / T) if T > 0 else 0.0
                 except OverflowError:
@@ -101,7 +101,7 @@ def simulated_annealing(instance, T0=1000.0, Tmin=1.0, alpha=0.85, iter_per_T=50
                 if random.random() < prob:
                     current = neighbor
                     current_cost = neighbor_cost
-        # refroidissement
+        # cooling
         T = T * alpha
 
     return best

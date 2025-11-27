@@ -5,30 +5,30 @@ from utils.data_model import Instance, Placement
 from utils.evaluate import evaluate
 
 def random_individual(instance: Instance) -> Placement:
-    """Crée un individu aléatoire (Placement) cohérent pour l'instance"""
+    """Creates a random individual (Placement) consistent with the instance"""
     
     p = Placement()
     machines = list(instance.machines.keys())
     regions = list(instance.regions.keys())
     for s_id, svc in instance.services.items():
-        # choisir une région autorisée si possible, sinon n'importe laquelle
+        # choose an allowed region if possible, otherwise any region
         if svc.allowed_regions:
             r = random.choice(svc.allowed_regions)
         else:
             r = random.choice(regions)
         m = random.choice(machines)
         p.placement[s_id] = (m, r)
-        p.redundancy[s_id] = random.choice([1, 1, 2])  # bias vers 1
-    # initialiser chiffrement selon les exigences des flux
+        p.redundancy[s_id] = random.choice([1, 1, 2])  # bias toward 1
+    # initialize encryption according to flow requirements
     for f in instance.flows:
         p.encryption[(f.src, f.dst)] = f.encryption_required
     return p
 
 def tournament_selection(pop: List[Tuple[float, Placement]], k: int = 3) -> Placement:
     """
-    Sélection par tournoi
-    pop est une liste de tuples (cost, placement) triée ou non
-    On tire k individus aléatoires et on renvoie le meilleur (coût minimal)
+    Tournament selection
+    pop is a list of tuples (cost, placement), sorted or not
+    We draw k random individuals and return the best (minimal cost)
     """
     chosen = random.sample(pop, min(k, len(pop)))
     chosen.sort(key=lambda x: x[0])
@@ -36,14 +36,14 @@ def tournament_selection(pop: List[Tuple[float, Placement]], k: int = 3) -> Plac
 
 def crossover(parent1: Placement, parent2: Placement) -> Placement:
     """
-    Crossover simple : pour chaque service, prendre l'affectation d'un des parents
-    (choix aléatoire). Retourne un enfant.
+    Simple crossover: for each service, take the assignment of one parent
+    (random choice). Returns a child.
     """
     child = Placement()
     svc_ids = set(parent1.placement.keys()) | set(parent2.placement.keys())
     for s in svc_ids:
         if s in parent1.placement and s in parent2.placement:
-            # choix binaire entre parents
+            # binary choice between parents
             if random.random() < 0.5:
                 child.placement[s] = parent1.placement[s]
                 child.redundancy[s] = parent1.redundancy.get(s, 1)
@@ -56,7 +56,7 @@ def crossover(parent1: Placement, parent2: Placement) -> Placement:
         else:
             child.placement[s] = parent2.placement[s]
             child.redundancy[s] = parent2.redundancy.get(s, 1)
-    # encryption : on combine (si parents d'accord -> garder, sinon aléatoire)
+    # encryption: combine (if both parents agree -> keep, otherwise random pick)
     for key in set(list(parent1.encryption.keys()) + list(parent2.encryption.keys())):
         v1 = parent1.encryption.get(key, None)
         v2 = parent2.encryption.get(key, None)
@@ -70,13 +70,13 @@ def crossover(parent1: Placement, parent2: Placement) -> Placement:
 
 def mutate(ind: Placement, instance: Instance, mutation_rate: float = 0.1):
     """
-    Mutation : pour chaque service, avec prob mutation_rate, déplacer sur (machine, region)
-    ou changer redondance ; pour certains flux, toggler chiffrement
-    Mutation se fait sur place (modifie l'individu)
+    Mutation: for each service, with probability mutation_rate, move to another
+    (machine, region) or change redundancy; for some flows, toggle encryption.
+    Mutation happens in-place (modifies the individual)
     """
     machines = list(instance.machines.keys())
     regions = list(instance.regions.keys())
-    # muter placements
+    # mutate placements
     for s_id in list(ind.placement.keys()):
         if random.random() < mutation_rate:
             svc = instance.services[s_id]
@@ -86,10 +86,10 @@ def mutate(ind: Placement, instance: Instance, mutation_rate: float = 0.1):
                 r = random.choice(regions)
             m = random.choice(machines)
             ind.placement[s_id] = (m, r)
-        # muter redondance
+        # mutate redundancy
         if random.random() < mutation_rate:
             ind.redundancy[s_id] = random.choice([1, 2, 3])
-    # muter chiffrement sur quelques flux
+    # mutate encryption on some flows
     for f in instance.flows:
         if random.random() < mutation_rate:
             key = (f.src, f.dst)
@@ -97,37 +97,37 @@ def mutate(ind: Placement, instance: Instance, mutation_rate: float = 0.1):
 
 def run_genetic(instance, pop_size=20, generations=50, mutation_rate=0.1, elite_count=2, seed=None) -> Placement:
     """
-    Exécute l'algorithme génétique et retourne le meilleur individu trouvé
+    Runs the genetic algorithm and returns the best individual found
     """
     if seed is not None:
         random.seed(seed)
     tournament_k = 3
 
-    # 1) Initialisation
+    # 1) Initialization
     population: List[Tuple[float, Placement]] = []
     for _ in range(pop_size):
         ind = random_individual(instance)
         cost, _ = evaluate(instance, ind)
-        # si infaisable? assigner coût très grand plutôt que math.inf pour garder l'individu
+        # if infeasible? assign a very large cost instead of math.inf to keep the individual
         if cost == math.inf:
             cost = 1e12
         population.append((cost, ind))
 
-    # garder le meilleur global
+    # keep global best
     population.sort(key=lambda x: x[0])
     best_cost, best_placement = population[0][0], population[0][1].copy()
 
-    # 2) Boucle des générations
+    # 2) Generations loop
     for g in range(generations):
-        # tri et élitisme
+        # sorting and elitism
         population.sort(key=lambda x: x[0])
         new_pop: List[Tuple[float, Placement]] = []
-        # conserver les élites (copies)
+        # keep elites (copies)
         for i in range(min(elite_count, len(population))):
             cpy = population[i][1].copy()
             new_pop.append((population[i][0], cpy))
 
-        # remplissage par reproduction, produire des enfants jusquu'à pop_size
+        # fill population by reproduction, produce children until pop_size
         while len(new_pop) < pop_size:
             parent1 = tournament_selection(population, k=tournament_k)
             parent2 = tournament_selection(population, k=tournament_k)
@@ -140,7 +140,7 @@ def run_genetic(instance, pop_size=20, generations=50, mutation_rate=0.1, elite_
 
         population = new_pop
 
-        # mise à jour du meilleur global
+        # update global best
         population.sort(key=lambda x: x[0])
         if population[0][0] < best_cost:
             best_cost = population[0][0]

@@ -4,25 +4,25 @@ from utils.print_solution import *
 
 def run_experiment(instance, algo_func, algo_name: str):
     """
-    Exécute un algorithme de placement sur une instance et renvoie ses résultats
+    Runs a placement algorithm on an instance and returns its results.
 
     Parameters
     ----------
     instance : Instance
-        L'instance de test générée.
+        The generated test instance.
     algo_func : function
-        Fonction de l'algorithme (doit retourner un Placement)
+        The algorithm function (must return a Placement)
     algo_name : str
-        Nom lisible de l'algorithme (pour l'affichage)
+        Human-readable name of the algorithm (for display)
 
     Returns
     -------
     dict : {
-        "algorithme": str,
-        "placement" : affichage,
-        "coût_total": float
-        "temps_exécution (s)": float,
-        "détails": dict,
+        "algorithm": str,
+        "placement": display output,
+        "total_cost": float,
+        "execution_time (s)": float,
+        "details": dict,
     }
     """
     
@@ -33,14 +33,12 @@ def run_experiment(instance, algo_func, algo_name: str):
 
     total, details = evaluate(instance, placement)
 
-
     formatted_details = "\n".join(f"{k:25s}: {v}" for k, v in details.items())
 
     return {
-        "algorithme : ": algo_name,
-        "Placement des services : ": afficher_placement(placement),
-        "coût_total : ": total,
-        "temps_exécution (s) : ": round(duration, 3),
-        "détails des coûts : ": formatted_details,
+        "algorithm": algo_name,
+        "service_placement": display_placement(placement),
+        "total_cost": total,
+        "execution_time (s)": round(duration, 3),
+        "cost_details": formatted_details,
     }
-

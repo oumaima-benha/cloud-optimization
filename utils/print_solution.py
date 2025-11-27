@@ -1,22 +1,22 @@
-#Fonction d'affichage de solution
-def afficher_placement(placement):
+# Function to display a placement solution
+def display_placement(placement):
     if not placement.placement:
-        print("⚠️ Aucun service placé.")
+        print("⚠️ No services placed.")
         return
 
-    # --- Affichage des placements par service ---
-    print("\n🖥️  Services placés :")
+    # --- Display placements per service ---
+    print("\n🖥️  Placed services:")
     for s_id, (m_id, r_id) in placement.placement.items():
         red = placement.redundancy.get(s_id, 1)
-        print(f"  - {s_id:<5s} → Machine: {m_id:<10s} | Région: {r_id:<5s} | Redondance: {red}")
+        print(f"  - {s_id:<5s} → Machine: {m_id:<10s} | Region: {r_id:<5s} | Redundancy: {red}")
 
-    # --- Affichage du chiffrement des flux ---
+    # --- Display flow encryption ---
     if placement.encryption:
-        print("\n Chiffrement des flux :")
+        print("\n Flow encryption status:")
         for (src, dst), enc in placement.encryption.items():
             status = "✅" if enc else "❌"
             print(f"  - {src} → {dst} : {status}")
     else:
-        print("\n Aucun flux configuré pour le chiffrement.")
+        print("\n No flows configured for encryption.")
 
     print("=====================================\n")

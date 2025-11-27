@@ -8,11 +8,11 @@ from utils.evaluate import evaluate
 
 
 # ==============================================================
-# 1️ Fonction utilitaire : mesurer le coût et le temps d'exécution
+# 1️⃣ Utility function: measure cost and execution time
 # ==============================================================
 def _run_algo_and_measure(algo_func, instance, seed=None, **algo_kwargs):
     """
-    Exécute un algorithme avec certains paramètres et renvoie un dict de résultats
+    Run an algorithm with specific parameters and return a result dictionary
     """
     start = time.time()
     placement = algo_func(instance, **algo_kwargs)
@@ -28,12 +28,12 @@ def _run_algo_and_measure(algo_func, instance, seed=None, **algo_kwargs):
 
 
 # ==============================================================
-# 2️ Sweep Recuit Simulé (Simulated Annealing)
+# 2️⃣ Simulated Annealing Sweep
 # ==============================================================
 def sweep_simulated_annealing(instance, param_grid: dict, n_runs: int = 3,
                               algo_func=None, save_csv: str = None):
     """
-    Explore différentes combinaisons de paramètres du recuit simulé
+    Explore different combinations of simulated annealing parameters
     """
     keys = list(param_grid.keys())
     all_combos = list(itertools.product(*param_grid.values()))
@@ -49,7 +49,7 @@ def sweep_simulated_annealing(instance, param_grid: dict, n_runs: int = 3,
 
     df = pd.DataFrame(results)
 
-    # statistiques agrégées
+    # aggregated statistics
     df_grouped = df.groupby(keys).agg(
         mean_cost=("cost", "mean"),
         std_cost=("cost", "std"),
@@ -58,18 +58,18 @@ def sweep_simulated_annealing(instance, param_grid: dict, n_runs: int = 3,
 
     if save_csv:
         df_grouped.to_csv(save_csv, index=False)
-        print(f"✅ Résultats sauvegardés dans {save_csv}")
+        print(f"✅ Results saved to {save_csv}")
 
     return df_grouped
 
 
 # ==============================================================
-# 3️ Sweep Algorithme Génétique
+# 3️⃣ Genetic Algorithm Sweep
 # ==============================================================
 def sweep_genetic(instance, param_grid: dict, n_runs: int = 3,
                   algo_func=None, save_csv: str = None):
     """
-    Explore différentes combinaisons de paramètres pour l'algorithme génétique
+    Explore different parameter combinations for the genetic algorithm
     """
     keys = list(param_grid.keys())
     all_combos = list(itertools.product(*param_grid.values()))
@@ -92,17 +92,17 @@ def sweep_genetic(instance, param_grid: dict, n_runs: int = 3,
 
     if save_csv:
         df_grouped.to_csv(save_csv, index=False)
-        print(f"✅ Résultats sauvegardés dans {save_csv}")
+        print(f"✅ Results saved to {save_csv}")
 
     return df_grouped
 
 
 # ==============================================================
-# 4️ Visualisation : Heatmap robuste avec agrégation automatique
+# 4️⃣ Visualization: Robust heatmap with automatic aggregation
 # ==============================================================
 def plot_heatmap(df: pd.DataFrame, x_param: str, y_param: str, metric: str = "mean_cost", title: str = ""):
     """
-    Affiche une heatmap même s'il y a des doublons (agrégation automatique)
+    Display a heatmap even if there are duplicates (automatic aggregation)
     """
     df_agg = df.groupby([x_param, y_param])[metric].mean().reset_index()
 
@@ -116,10 +116,9 @@ def plot_heatmap(df: pd.DataFrame, x_param: str, y_param: str, metric: str = "me
     plt.show()
 
 
-
 def plot_scatter(df: pd.DataFrame, x_param: str, y_param: str, hue_param: str, metric: str = "mean_cost", title: str = ""):
     """
-    Scatter plot 3D à 2D : couleur = 3e paramètre, taille = coût
+    2D scatter plot: color = 3rd parameter, size = cost
     """
     plt.figure(figsize=(8, 6))
     sns.scatterplot(
@@ -131,21 +130,21 @@ def plot_scatter(df: pd.DataFrame, x_param: str, y_param: str, hue_param: str, m
         sizes=(50, 400),
         palette="coolwarm"
     )
-    plt.title(title or f"Influence de {x_param}, {y_param} et {hue_param}")
+    plt.title(title or f"Influence of {x_param}, {y_param}, and {hue_param}")
     plt.tight_layout()
     plt.show()
 
 
 # ==============================================================
-# 6️ Visualisation : évolution du coût moyen selon un paramètre
+# 5️⃣ Visualization: average cost evolution by parameter
 # ==============================================================
 def plot_line(df: pd.DataFrame, x_param: str, metric: str = "mean_cost", title: str = ""):
     """
-    Affiche une courbe moyenne du coût selon un paramètre
+    Display the average cost curve according to a parameter
     """
     plt.figure(figsize=(7, 5))
     sns.lineplot(data=df, x=x_param, y=metric, marker="o")
-    plt.title(title or f"{metric} en fonction de {x_param}")
+    plt.title(title or f"{metric} as a function of {x_param}")
     plt.xlabel(x_param)
     plt.ylabel(metric)
     plt.tight_layout()

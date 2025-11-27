@@ -8,8 +8,8 @@ class Service:
     mem: float
     storage: float
     allowed_regions: List[str]
-    zone: str    #type de zone de sécurité (public, interne, restreint, etc.)
-    sla: Optional[float] = None  # ex: 99.9%
+    zone: str    # type of security zone (public, internal, restricted, etc.)
+    sla: Optional[float] = None  # e.g., 99.9%
 
 @dataclass
 class MachineType:
@@ -31,18 +31,18 @@ class Flow:
     latency_max: float  # ms
     encryption_required: bool = False
 
-# Les éléments nécessaires pour une instance de calcul.
+# Elements needed for a computing instance
 @dataclass
 class Instance:
     services: Dict[str, Service]
     machines: Dict[str, MachineType]
     regions: Dict[str, Region]
     flows: List[Flow]
-    latency: Dict[Tuple[str,str], float]  # la clé est un couple (region_i, region_j)
+    latency: Dict[Tuple[str,str], float]  # key is a tuple (region_i, region_j)
     transfer_cost: Dict[Tuple[str,str], float]  # (region_i, region_j) -> $/GB
-    security_rules: Dict[Tuple[str,str], bool]  # (zone_i, zone_j) -> communication possible?
+    security_rules: Dict[Tuple[str,str], bool]  # (zone_i, zone_j) -> communication allowed?
 
-#solution candidate
+# Candidate solution
 @dataclass
 class Placement:
     placement: Dict[str, Tuple[str,str]] = field(default_factory=dict)
@@ -56,9 +56,9 @@ class Placement:
             encryption=self.encryption.copy()
         )
 '''
-Exemple :
+Example:
 placement = {
-  "s1": ("m_small", "r1"),  # service s1 sur machine m_small en région r1
+  "s1": ("m_small", "r1"),  # service s1 on machine m_small in region r1
   "s2": ("m_medium", "r2")
 }
 redundancy = {"s1": 2, "s2": 1}

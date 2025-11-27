@@ -9,59 +9,56 @@ from utils.random_solution_generator import random_baseline
 
 
 def main():
-    # ======================== 1️ Générer une instance ========================
+    # ======================== 1️⃣ Generate an instance ========================
     instance = generate_instance(nb_services=50, nb_regions=12, nb_machines=20)
 
-    results = []  # pour stocker tous les résultats dans un DataFrame à la fin
+    results = []  # to store all results for final DataFrame
 
-    # ======================== 2️ Baseline aléatoire ========================
-    print("\n================================================ 0 - Baseline Aléatoire ================================================")
-    rand_result = run_experiment(instance, random_baseline, "Baseline Aléatoire")
+    # ======================== 2️⃣ Random Baseline ========================
+    print("\n================================================ 0 - Random Baseline ================================================")
+    rand_result = run_experiment(instance, random_baseline, "Random Baseline")
     results.append(rand_result)
-    print("le coût total de la baseline aléatoire est :", rand_result["coût_total : "])
-    print("\n--- Détails ---")
-    print(rand_result["détails des coûts : "])
+    print("Total cost of the random baseline:", rand_result["total_cost"])
+    print("\n--- Details ---")
+    print(rand_result["cost_details"])
 
-    # ======================== 3️ Greedy ========================
-    print("\n================================================ 1 - Algorithme Greedy ================================================")
+    # ======================== 3️⃣ Greedy Algorithm ========================
+    print("\n================================================ 1 - Greedy Algorithm ================================================")
     greedy_result = run_experiment(instance, greedy_place, "Greedy")
     results.append(greedy_result)
-    print("le coût total de l'algorithme Greedy est :", greedy_result["coût_total : "])
-    print("\n--- Détails ---")
-    print(greedy_result["détails des coûts : "])
+    print("Total cost of the Greedy algorithm:", greedy_result["total_cost"])
+    print("\n--- Details ---")
+    print(greedy_result["cost_details"])
 
-
-    # ======================== 4️ Simulated Annealing ========================
-    print("\n================================================ 2 - Algorithme de Recuit Simulé ================================================")
-    sa_result = run_experiment(instance, simulated_annealing, "Recuit Simulé")
+    # ======================== 4️⃣ Simulated Annealing ========================
+    print("\n================================================ 2 - Simulated Annealing ================================================")
+    sa_result = run_experiment(instance, simulated_annealing, "Simulated Annealing")
     results.append(sa_result)
-    print("le coût total de l'algorithme Recuit Simulé est :", sa_result["coût_total : "])
-    print("\n--- Détails ---")
-    print(sa_result["détails des coûts : "])
+    print("Total cost of the Simulated Annealing algorithm:", sa_result["total_cost"])
+    print("\n--- Details ---")
+    print(sa_result["cost_details"])
 
-    # ======================== 5️ Algorithme Génétique ========================
-    print("\n================================================ 3 - Algorithme Génétique ================================================")
-    ga_result = run_experiment(instance, run_genetic, "Algorithme Génétique")
+    # ======================== 5️⃣ Genetic Algorithm ========================
+    print("\n================================================ 3 - Genetic Algorithm ================================================")
+    ga_result = run_experiment(instance, run_genetic, "Genetic Algorithm")
     results.append(ga_result)
-    print("le coût total de l'algorithme Génétique est :", ga_result["coût_total : "])
-    print("\n--- Détails ---")
-    print(ga_result["détails des coûts : "])
+    print("Total cost of the Genetic Algorithm:", ga_result["total_cost"])
+    print("\n--- Details ---")
+    print(ga_result["cost_details"])
     
-
-    # ======================== 6️ Tableau de synthèse ========================
-    print("\n\n================================================ 🔍 Résumé comparatif global ================================================")
+    # ======================== 6️⃣ Summary Table ========================
+    print("\n\n================================================ 🔍 Overall Comparison Summary ================================================")
     df = pd.DataFrame(results)
-    print(df[["algorithme : ", "coût_total : ", "temps_exécution (s) : "]])
+    print(df[["algorithm", "total_cost", "execution_time (s)"]])
 
-    # ======================== 7️ Visualisation ========================
-    plot_comparison_cout(df.rename(columns={
-        "algorithme : ": "algorithme",
-        "coût_total : ": "coût_total"}))
+    # ======================== 7️⃣ Visualization ========================
+    plot_cost_comparison(df.rename(columns={
+        "algorithm": "algorithm",
+        "total_cost": "total_cost"}))
     
-    plot_comparison_temps(df.rename(columns={
-        "algorithme : ": "algorithme",
-        "temps_exécution (s) : ": "temps_exécution"}))
-
+    plot_execution_time_comparison(df.rename(columns={
+        "algorithm": "algorithm",
+        "execution_time (s)": "execution_time"}))
 
 
 if __name__ == "__main__":

@@ -5,19 +5,19 @@ from utils.data_model import Service, MachineType, Region, Flow, Instance, Place
 from utils.evaluate import evaluate
 
 """
-    Cette fonction généree une instance (un probleme) aléatoire mais cohérente 
-    """
+    This function generates a random but coherent instance (problem)
+"""
 def generate_instance(nb_services=5, nb_regions=3, nb_machines=3):
     
     path = "instances/example_instance{}{}{}.json".format(nb_services, nb_regions, nb_machines)
 
-    random.seed()  # réinitialisation de la graine pour variabilité
+    random.seed()  # reset the seed for variability
 
-    # === 1️ Régions ===
+    # === 1️ Regions ===
     regions = {f"r{i+1}": Region(id=f"r{i+1}") for i in range(nb_regions)}
 
-    # === 2️ Types de machines (choisis parmi un catalogue connu) ===
-    # On définit un catalogue réaliste
+    # === 2️ Machine types (chosen from a known catalog) ===
+    # Define a realistic catalog
     machine_catalogue = {
         "m_micro":   {"cpu": 1.0,  "mem": 1.0,  "storage": 20.0,  "bandwidth": 50.0},
         "m_small":   {"cpu": 2.0,  "mem": 4.0,  "storage": 100.0, "bandwidth": 100.0},
@@ -26,7 +26,7 @@ def generate_instance(nb_services=5, nb_regions=3, nb_machines=3):
         "m_xlarge":  {"cpu": 16.0, "mem": 32.0, "storage": 800.0, "bandwidth": 800.0},
     }
 
-    # On sélectionne aléatoirement nb_machines types parmi le catalogue
+    # Randomly select nb_machines types from the catalog
     chosen_types = random.sample(list(machine_catalogue.keys()), k=min(nb_machines, len(machine_catalogue)))
     machines = {
         name: MachineType(id=name, **machine_catalogue[name])
@@ -34,7 +34,7 @@ def generate_instance(nb_services=5, nb_regions=3, nb_machines=3):
     }
 
     # === 3️ Services ===
-    zones = ["internal", "public", "restreint"]
+    zones = ["internal", "public", "restricted"]
     services = {}
     for i in range(nb_services):
         s_id = f"s{i+1}"
@@ -54,7 +54,7 @@ def generate_instance(nb_services=5, nb_regions=3, nb_machines=3):
             sla=sla
         )
 
-    # === 4️ Flux réseau ===
+    # === 4️ Network flows ===
     flows = []
     nb_flows = random.randint(nb_services, nb_services * 2)
     for _ in range(nb_flows):
@@ -64,7 +64,7 @@ def generate_instance(nb_services=5, nb_regions=3, nb_machines=3):
         encryption_required = random.choice([True, False])
         flows.append(Flow(src=src, dst=dst, bw=bw, latency_max=latency_max, encryption_required=encryption_required))
 
-    # === 5️ Latence & coûts réseau inter-régions ===
+    # === 5️ Latency & inter-region network costs ===
     latency = {}
     transfer_cost = {}
     for r1 in regions:
@@ -76,16 +76,16 @@ def generate_instance(nb_services=5, nb_regions=3, nb_machines=3):
                 latency[(r1, r2)] = round(random.uniform(20.0, 100.0), 2)
                 transfer_cost[(r1, r2)] = round(random.uniform(0.01, 0.05), 3)
 
-    # === 6️ Règles de sécurité ===
+    # === 6️ Security rules ===
     security_rules = {
         ("internal", "public"): True,
         ("public", "internal"): True,
-        ("internal", "restreint"): False,
-        ("restreint", "public"): False,
-        ("restreint", "internal"): True,
+        ("internal", "restricted"): False,
+        ("restricted", "public"): False,
+        ("restricted", "internal"): True,
     }
 
-    # === 7️ Création de l'instance ===
+    # === 7️ Create the instance ===
     instance = Instance(
         services=services,
         machines=machines,
@@ -96,7 +96,7 @@ def generate_instance(nb_services=5, nb_regions=3, nb_machines=3):
         security_rules=security_rules
     )
 
-    # === 8️ Sauvegarde JSON ===
+    # === 8️ Save as JSON ===
     os.makedirs("instances", exist_ok=True)
     data = {
         "services": {sid: vars(s) for sid, s in services.items()},
@@ -107,14 +107,14 @@ def generate_instance(nb_services=5, nb_regions=3, nb_machines=3):
 
     with open(path, "w") as f:
         json.dump(data, f, indent=2)
-    print(f"✅ Instance sauvegardée dans {path}")
+    print(f"✅ Instance saved to {path}")
 
     return instance
 
 
 def test_basic_solution(instance):
     """
-    Crée une solution de placement simple et évalue son coût.
+    Create a simple placement solution and evaluate its cost.
     """
     placement = Placement()
     region_list = list(instance.regions.keys())
@@ -129,7 +129,7 @@ def test_basic_solution(instance):
         placement.encryption[(f.src, f.dst)] = f.encryption_required
 
     total, details = evaluate(instance, placement)
-    print("\n=== Évaluation d'une solution basique ===")
-    print(f"Coût total = {total}")
+    print("\n=== Evaluation of a basic solution ===")
+    print(f"Total cost = {total}")
     for k, v in details.items():
         print(f"{k:25s}: {v}")

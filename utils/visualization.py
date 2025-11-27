@@ -1,28 +1,27 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def plot_comparison_cout(df):
+def plot_cost_comparison(df):
     """
-    Visualise la comparaison des coûts
+    Visualize the comparison of total costs
     """
     fig, ax1 = plt.subplots(figsize=(8, 4))
-    sns.barplot(x="algorithme", y="coût_total", data=df, ax=ax1, palette="viridis")
-    ax1.set_title("Comparaison du coût total par algorithme")
-    ax1.set_ylabel("Coût total")
-    ax1.set_xlabel("Algorithme")
+    sns.barplot(x="algorithm", y="total_cost", data=df, ax=ax1, palette="viridis")
+    ax1.set_title("Comparison of Total Cost by Algorithm")
+    ax1.set_ylabel("Total Cost")
+    ax1.set_xlabel("Algorithm")
     plt.tight_layout()
     plt.show()
 
 
-
-def plot_comparison_temps(df):
+def plot_execution_time_comparison(df):
     """
-    Visualise la comparaison des temps d'exécution
+    Visualize the comparison of execution times
     """
     fig, ax1 = plt.subplots(figsize=(8, 4))
-    sns.barplot(x="algorithme", y="temps_exécution", data=df, ax=ax1, palette="viridis")
-    ax1.set_title("Comparaison des temps d'exécution par algorithme")
-    ax1.set_ylabel("Temps d'exécution")
-    ax1.set_xlabel("Algorithme")
+    sns.barplot(x="algorithm", y="execution_time", data=df, ax=ax1, palette="viridis")
+    ax1.set_title("Comparison of Execution Time by Algorithm")
+    ax1.set_ylabel("Execution Time (s)")
+    ax1.set_xlabel("Algorithm")
     plt.tight_layout()
     plt.show()

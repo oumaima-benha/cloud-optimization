@@ -4,16 +4,16 @@ import math
 from utils.boites_noires import *
 
 
-''' ================================================= Évaluation complète =================================================
-    Ce code évalue une solution et renvoie 
+''' ================================================= Full Evaluation =================================================
+    This code evaluates a solution and returns
     (total_cost, details_dict)
-    Et si une boîte-noire retourne math.inf, la fonction retourne (math.inf, details)
+    And if any black-box function returns math.inf, the function returns (math.inf, details)
 '''
 def evaluate(instance: Instance, placement: Placement) -> Tuple[float, dict]:
     total = 0.0
     details: Dict[str, float] = {}
 
-    # --- 1) coût machines (somme par service) ---
+    # --- 1) machine cost (sum per service) ---
     machine_cost = 0.0
     for s_id, (m_id, r_id) in placement.placement.items():
         red = placement.redundancy.get(s_id, 1)
@@ -25,12 +25,12 @@ def evaluate(instance: Instance, placement: Placement) -> Tuple[float, dict]:
     details['machine_cost'] = machine_cost
     total += machine_cost
 
-    # --- 2) coût stockage ---
+    # --- 2) storage cost ---
     storage_cost = 0.0
     for s in instance.services.values():
         _, r = placement.placement.get(s.id, (None, None))
         if r is None:
-            # ajouter une pénalité si non placé
+            # add a penalty if not placed
             storage_cost += 1e6
         else:
             c = cost_storage(s.storage, r)
@@ -41,25 +41,25 @@ def evaluate(instance: Instance, placement: Placement) -> Tuple[float, dict]:
     details['storage_cost'] = storage_cost
     total += storage_cost
 
-    # --- 3) réseau / flux : coût réseau + sécurité + encryption + performance penalties ---
+    # --- 3) network / flows: network cost + security + encryption + performance penalties ---
     network_cost = 0.0
     sec_penalty = 0.0
     perf_penalty = 0.0
     encryption_penalty = 0.0
 
-    # calculer le cout pour chaque flux 
+    # calculate cost for each flow
     for f in instance.flows:
-        src_place = placement.placement.get(f.src) #c'est le tuple (machiine, région)
+        src_place = placement.placement.get(f.src) # tuple (machine, region)
         dst_place = placement.placement.get(f.dst)
         if src_place is None or dst_place is None:
-            # ajouter une pénalité si non placé
+            # add a penalty if not placed
             perf_penalty += 1e6
             continue
         m_src, r_src = src_place
         _, r_dst = dst_place
 
-        # Calcul du trafic mensuel approximatif en Go :
-        # bande passante (en Mbit/s) × secondes par mois / 8 (bits -> octets) / 1024 (Mo -> Go) 
+        # Approximate monthly traffic in GB:
+        # bandwidth (in Mbit/s) × seconds per month / 8 (bits -> bytes) / 1024 (MB -> GB)
         bw_gb_month = f.bw * 3600 * 24 * 30 / 8 / 1024
 
         enc = placement.encryption.get((f.src, f.dst), f.encryption_required)
@@ -99,14 +99,14 @@ def evaluate(instance: Instance, placement: Placement) -> Tuple[float, dict]:
     details['performance_penalty'] = perf_penalty
     total += (network_cost + sec_penalty + encryption_penalty + perf_penalty)
 
-    # --- 4) disponibilité / availability cost (par service) ---
+    # --- 4) availability cost (per service) ---
     avail_cost_sum = 0.0
     for s in instance.services.values():
         _, r = placement.placement.get(s.id, (None, None))
         red = placement.redundancy.get(s.id, 1)
         sla_required = s.sla
         if r is None:
-            # ajouter une pénalité si non placé
+            # add a penalty if not placed
             avail_cost_sum += 1e6
         else:
             ac = cost_availability(sla_required, red, r)
@@ -117,8 +117,8 @@ def evaluate(instance: Instance, placement: Placement) -> Tuple[float, dict]:
     details['availability_cost'] = avail_cost_sum
     total += avail_cost_sum
 
-    # --- 5) couut de capacité  ---
-    # On regroupe d’abord tous les services affectés à la même combinaison (machine_type, région)
+    # --- 5) capacity cost ---
+    # First, group all services assigned to the same combination (machine_type, region)
     machine_alloc: Dict[Tuple[str, str], List[str]] = {}
     for s_id, (m_id, r_id) in placement.placement.items():
         key = (m_id, r_id)
@@ -135,15 +135,15 @@ def evaluate(instance: Instance, placement: Placement) -> Tuple[float, dict]:
     total += capacity_penalty
 
     # --- 6) cyber costs ---
-    cyber_cost = cost_cybersecurity(placement, None, instance.flows) #j'ai mis None pour la topology
+    cyber_cost = cost_cybersecurity(placement, None, instance.flows) # None used for topology placeholder
     if cyber_cost == math.inf:
         details['error'] = "cybersecurity cost inf"
         return math.inf, details
     details['cyber_cost'] = cyber_cost
     total += cyber_cost
 
-    # --- 7) géographie (conformité) penalties par service ---
-    # on prépare le mapping des régions d'affectation : {service_id: region_id}
+    # --- 7) geography (compliance) penalties per service ---
+    # prepare the mapping of service assignments: {service_id: region_id}
     other_services_regions = {
         s_id: r_id for s_id, (_, r_id) in placement.placement.items()
     }
