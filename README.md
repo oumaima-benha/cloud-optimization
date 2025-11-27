@@ -2,40 +2,40 @@
 
 ## Introduction  
 
-Ce projet a pour objectif de modéliser et d’optimiser le **placement de services cloud** dans un ensemble de régions, machines et infrastructures hétérogènes, en respectant un ensemble de **contraintes de disponibilité, sécurité, performance et conformité géographique**.  
+This project aims to model and optimize **cloud service placement** across a set of heterogeneous regions, machines and infrastructures, while respecting a set of **availability, security, performance and geographical compliance constraints**.  
 
-L’enjeu est d’attribuer, pour chaque service, un **type de machine** et une **région de déploiement**, de façon à **minimiser le coût global** tout en garantissant un **niveau de conformité et de performance acceptable**.  
+The goal is to assign, for each service, a **machine type** and a **deployment region** so as to **minimize overall cost** while guaranteeing an **acceptable level of compliance and performance**.  
 
-Le projet simule le comportement de plateformes cloud (type AWS, Azure, GCP) et implémente plusieurs approches d’optimisation pour comparer leurs performances.  
-
----
-
-## Type de problème
-
-Le problème de placement des services cloud appartient à la famille des **problèmes d’optimisation combinatoire**.  
-
-Plus précisément, il s’agit d’un **problème d’affectation multi-dimensionnel avec contraintes multiples**, proche du **problème NP-difficile**.  
-
-### Justification :
-- Chaque service doit être affecté à **une machine et une région** parmi un ensemble fini → combinatoire.  
-- Les contraintes de capacité, sécurité et latence rendent la recherche d’une solution **non triviale**.  
-- La fonction d’évaluation inclut plusieurs composantes parfois conflictuelles (coût ↔ performance ↔ conformité).  
-- Les solutions exactes (programmation linéaire ou MILP) deviennent inexploitables pour des instances moyennes → **recours à des heuristiques et métaheuristiques**.  
+The project simulates the behavior of cloud platforms (e.g., AWS, Azure, GCP) and implements several optimization approaches to compare their performance.  
 
 ---
 
-## Objectifs pédagogiques et techniques  
+## Problem type
 
-- Construire un **modèle de données cohérent** (services, régions, flux, machines, contraintes).  
-- Définir une **fonction d’évaluation** (coûts, SLA, sécurité, conformité).  
-- Générer des **instances aléatoires réalistes** de déploiement.  
-- Implémenter et comparer plusieurs **algorithmes d’optimisation**. 
-- Mesurer les **performances et la convergence** de chaque méthode.  
-- Effectuer des **tests unitaires** pour valider les fonctions critiques.  
+The cloud service placement problem belongs to the family of **combinatorial optimization problems**.  
+
+More precisely, it is a **multi-dimensional assignment problem with multiple constraints**, close to an **NP-hard problem**.  
+
+### Justification:
+- Each service must be assigned to **a machine and a region** among a finite set → combinatorial.  
+- Capacity, security and latency constraints make finding a solution **non-trivial**.  
+- The evaluation function includes several sometimes conflicting components (cost ↔ performance ↔ compliance).  
+- Exact solutions (linear programming or MILP) become unusable for medium instances → **resort to heuristics and metaheuristics**.  
 
 ---
 
-## Architecture du projet  
+## Educational and technical objectives  
+
+- Build a **consistent data model** (services, regions, flows, machines, constraints).  
+- Define an **evaluation function** (costs, SLA, security, compliance).  
+- Generate **realistic random instances** of deployments.  
+- Implement and compare several **optimization algorithms**. 
+- Measure the **performance and convergence** of each method.  
+- Perform **unit tests** to validate critical functions.  
+
+---
+
+## Project architecture  
 
 ```
 project_root/
@@ -73,22 +73,22 @@ project_root/
 
 ## Installation  
 
-### 1️ Cloner le projet  
+### 1️ Clone the project  
 
 ```bash
 git clone https://github.com/oumaima-benha/cloud-optimization
 cd cloud-optimization
 ```
 
-### 2️ Créer un environnement virtuel  
+### 2️ Create a virtual environment  
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # sous Linux/Mac
-venv\Scripts\activate     # sous Windows
+source venv/bin/activate  # on Linux/Mac
+venv\Scripts\activate     # on Windows
 ```
 
-### 3️ Installer les dépendances  
+### 3️ Install dependencies  
 
 ```bash
 pip install -r requirements.txt
@@ -96,260 +96,258 @@ pip install -r requirements.txt
 
 ---
 
-## Phase 1 – Modélisation  
+## Phase 1 – Modeling  
 
-Avant la phase de codage, une **modélisation mathématique manuelle** du problème a été réalisée afin de clarifier les variables, contraintes et fonctions de coût.
-L’objectif de cette modélisation était de fournir une base claire et rigoureuse avant le développement des algorithmes de solution.  
+Before coding, a **manual mathematical modeling** of the problem was performed to clarify variables, constraints and cost functions.
+The goal of this modeling was to provide a clear and rigorous basis before developing solution algorithms.  
 
+The core of the project relies on a clear data model defined in `data_model.py`.
 
-Le cœur du projet repose sur un modèle de données clair défini dans `data_model.py`.
+### 🧩 Main entities:
 
-### 🧩 Entités principales :
-
-| Entité | Description |
+| Entity | Description |
 |--------|--------------|
-| **Service** | Unité de déploiement avec CPU, mémoire, stockage, SLA, zone de sécurité. |
-| **MachineType** | Machine disponible (petite, moyenne, grande). |
-| **Region** | Localisation géographique (r1, r2, etc.). |
-| **Flow** | Flux réseau entre deux services (bande passante, latence, chiffrement). |
-| **Instance** | Conteneur regroupant tous les services, machines, régions et flux (un problème à résoudre). |
-| **Placement** | Solution de déploiement (service → machine, région, redondance, chiffrement). |
+| **Service** | Deployment unit with CPU, memory, storage, SLA, security zone. |
+| **MachineType** | Available machine (small, medium, large). |
+| **Region** | Geographical location (r1, r2, etc.). |
+| **Flow** | Network flow between two services (bandwidth, latency, encryption). |
+| **Instance** | Container grouping all services, machines, regions and flows (a problem to solve). |
+| **Placement** | Deployment solution (service → machine, region, redundancy, encryption). |
 
 ---
 
-## Phase 2 – Fonction d’évaluation  
+## Phase 2 – Evaluation function  
 
-La fonction `evaluate(instance, placement)` calcule le **coût total d’une solution** en additionnant plusieurs sous-coûts :
+The function `evaluate(instance, placement)` computes the **total cost of a solution** by summing several sub-costs:
 
-| Composant | Fonction | Type de contrainte | Description |
+| Component | Function | Constraint type | Description |
 |------------|-----------|--------------------|--------------|
-| Coût machine | `cost_machine()` | Dure | Machine non dispo ou redondance non supportée |
-| Coût stockage | `cost_storage()` | Souple | Pénalité si service non placé |
-| Réseau | `cost_network()` | Dure | Si lien réseau impossible (math.inf), la fonction s’arrête. |
-| Sécurité | `cost_security_violation()` | Dure/Souple | Si communication interdite sinon pénalisée (souple) |
-| Chiffrement | `cost_encryption_violation()` | Souple | Si chiffrement manquant alors que requis → pénalité |
-| Performance | `cost_network_performance_violation()` | Souple | Si latence max dépassée → pénalité (latence > limite), mais pas infaisable |
-| SLA | `cost_availability()` | Dure/Souple | Si SLA impossible (math.inf) → dure ; sinon coût progressif selon SLA |
-| Capacité | `cost_capacity_violation()` | Dure/Souple | Si dépassement critique → math.inf, sinon pénalité modérée. |
-| Cybersécurité | `cost_cybersecurity()` | Souple | Score de risque global |
-| Géographie | `cost_geography_violation()` | Dure/Souple | Si région interdite → math.inf ; sinon pénalité pour non-conformité (RGPD, souveraineté) |
+| Machine cost | `cost_machine()` | Hard | Machine unavailable or redundancy not supported |
+| Storage cost | `cost_storage()` | Soft | Penalty if service not placed |
+| Network | `cost_network()` | Hard | If network link impossible (math.inf), function stops. |
+| Security | `cost_security_violation()` | Hard/Soft | If communication forbidden otherwise penalized (soft) |
+| Encryption | `cost_encryption_violation()` | Soft | If encryption missing when required → penalty |
+| Performance | `cost_network_performance_violation()` | Soft | If max latency exceeded → penalty (latency > limit), but not infeasible |
+| SLA | `cost_availability()` | Hard/Soft | If SLA impossible (math.inf) → hard ; otherwise progressive cost according to SLA |
+| Capacity | `cost_capacity_violation()` | Hard/Soft | If critical overflow → math.inf, otherwise moderate penalty. |
+| Cybersecurity | `cost_cybersecurity()` | Soft | Overall risk score |
+| Geography | `cost_geography_violation()` | Hard/Soft | If region forbidden → math.inf ; otherwise penalty for non-compliance (GDPR, sovereignty) |
 
-Toute contrainte “dure” entraîne `math.inf` → solution infaisable.
-
----
-
-## Phase 3 – Structure Python du projet  
-
-Chaque module a une responsabilité unique :
-- `data_model.py` : structures de données
-- `evaluate.py` : fonction d’évaluation globale
-- `generate_instances.py` : génération aléatoire d’instances de test
-- `print_solution.py` : affichage formaté d’un placement
-- `run_experiment.py` : exécution d’un algorithme et mesure de son coût
-- `visualization.py` : graphiques et comparaisons
+Any “hard” constraint leads to `math.inf` → infeasible solution.
 
 ---
 
-## Phase 4 – Génération des données  
+## Phase 3 – Python project structure  
 
-Le script `generate_instances.py` crée des **instances réalistes et aléatoires** :
-- services avec besoins CPU/Mem aléatoires,  
-- régions avec latences et coûts variables,  
-- flux inter-services avec bande passante et exigences de sécurité,  
-- stockage des instances en `.json` dans le dossier `instances/`.
+Each module has a single responsibility:
+- `data_model.py` : data structures
+- `evaluate.py` : global evaluation function
+- `generate_instances.py` : random instance generation
+- `print_solution.py` : formatted placement display
+- `run_experiment.py` : run an algorithm and measure its cost
+- `visualization.py` : charts and comparisons
 
-Exemple :
+---
+
+## Phase 4 – Data generation  
+
+The script `generate_instances.py` creates **realistic and random instances**:
+- services with random CPU/Mem requirements,  
+- regions with variable latencies and costs,  
+- inter-service flows with bandwidth and security requirements,  
+- instances stored as `.json` in the `instances/` folder.
+
+Example:
 ```python
 instance = generate_instance(nb_services=5, nb_regions=3, nb_machines=2)
 ```
 
 ---
 
-## Phase 5 – Algorithmes d’optimisation  
-### 1️ Algorithme Greedy (glouton)
+## Phase 5 – Optimization algorithms  
+### 1️ Greedy Algorithm
 
-#### Justification du choix
-Le greedy a été choisi comme **approche initiale simple et rapide**.  
-Il fournit une base de référence raisonnable et permet de vérifier la cohérence du modèle.  
-Bien qu’il puisse rester bloqué dans un minimum local, il donne souvent une solution correcte en un temps minimal.
+#### Rationale
+Greedy was chosen as a **simple and fast initial approach**.  
+It provides a reasonable baseline and helps verify model consistency.  
+Although it can get stuck in a local minimum, it often gives a correct solution in minimal time.
 
-#### Description et pseudo-code
+#### Description and pseudo-code
 
 ```text
-Entrée : instance (services, machines, regions, flows, règles...), evaluate(instance, placement)
-Sortie : placement_greedy
+Input : instance (services, machines, regions, flows, rules...), evaluate(instance, placement)
+Output : placement_greedy
 
-Algorithme GreedyPlacement :
-  placement <- placement vide
+Algorithm GreedyPlacement :
+  placement <- empty placement
   encryption defaults <- {}
-  ordem_services <- liste des services triée par importance décroissante (ex : cpu décroissant)
+  order_services <- list of services sorted by decreasing importance (e.g.: cpu descending)
 
-  Pour chaque service s dans ordem_services :
+  For each service s in order_services :
     best_cost <- +∞
     best_assignment <- None
 
-    Pour chaque machine_type m dans instance.machines :
-      Pour chaque region r dans s.allowed_regions :
-        # tentative : placer s sur (m,r)
-        placement_temp <- copie profonde de placement
+    For each machine_type m in instance.machines :
+      For each region r in s.allowed_regions :
+        # attempt: place s on (m,r)
+        placement_temp <- deep copy of placement
         placement_temp.placement[s] <- (m, r)
-        placement_temp.redundancy[s] <- 1  # par défaut (on pourrait essayer >1)
-        # mettre à jour chiffrement des flux impliquant s : si nécessaire utiliser f.encryption_required
-        pour chaque flux f qui implique s :
-          if f.src ou f.dst déjà placé dans placement_temp :
+        placement_temp.redundancy[s] <- 1  # by default (could try >1)
+        # update encryption of flows involving s: if needed use f.encryption_required
+        for each flow f involving s :
+          if f.src or f.dst already placed in placement_temp :
             placement_temp.encryption[(f.src,f.dst)] <- f.encryption_required
 
         (cost, details) <- evaluate(instance, placement_temp)
 
-        Si cost < best_cost :
+        If cost < best_cost :
           best_cost <- cost
           best_assignment <- (m, r)
 
-    Si best_assignment est non None et best_cost < +∞ :
-      placer s dans placement en utilisant best_assignment
-    Sinon :
-      laisser s non placé (ou marquer comme impossible)
+    If best_assignment is not None and best_cost < +∞ :
+      place s in placement using best_assignment
+    Else :
+      leave s unplaced (or mark as impossible)
 
-  Retourner placement
+  Return placement
 ```
 
-Complexité : **O(n × m × r x e)**  
-(n = services, m = machines, r = régions, e = complexité de l'appel evaluate)
+Complexity: **O(n × m × r x e)**  
+(n = services, m = machines, r = regions, e = complexity of evaluate call)
 
-Si e ~ O(n + f), on obtient : **O(n × m × r x (n + f))** 
+If e ~ O(n + f), we get: **O(n × m × r x (n + f))** 
 
 ---
 
-### 2️ Algorithme du Recuit Simulé (Simulated Annealing)
+### 2️ Simulated Annealing
 
-#### Justification du choix
-Le recuit simulé a été choisi car il permet d’explorer l’espace de recherche **au-delà des minima locaux**, en introduisant une notion de **température** qui diminue progressivement.  
-Il est particulièrement adapté aux problèmes combinatoires avec plusieurs contraintes douces.
+#### Rationale
+Simulated annealing was chosen because it allows exploration of the search space **beyond local minima**, by introducing a notion of **temperature** that gradually decreases.  
+It is particularly suited to combinatorial problems with several soft constraints.
 
-#### Description et pseudo-code
+#### Description and pseudo-code
 
 ```text
-Entrée : instance, evaluate, placement_initial (optionnel)
-Paramètres : T0 (température initiale), Tmin (température finale), alpha (facteur de refroidissement),
-             iter_per_T (itérations par palier de température), max_eval (optionnel)
+Input : instance, evaluate, placement_initial (optional)
+Parameters : T0 (initial temperature), Tmin (final temperature), alpha (cooling factor),
+             iter_per_T (iterations per temperature level), max_eval (optional)
 
-Si placement_initial est None :
-  placement_current <- solution aléatoire ou greedy(instance)
-Sinon :
+If placement_initial is None :
+  placement_current <- random solution or greedy(instance)
+Else :
   placement_current <- placement_initial
 
 cost_current <- evaluate(instance, placement_current)
 
-placement_best <- copie(placement_current)
+placement_best <- copy(placement_current)
 cost_best <- cost_current
 
 T <- T0
-while T > Tmin and nombre_evaluations < max_eval :
+while T > Tmin and number_of_evaluations < max_eval :
   for i in 1..iter_per_T :
-    neighbor <- générer_voisin(placement_current, instance)
-      # voisin = déplacer un service vers une autre (machine, région)
-      # ou toggler chiffrement pour un flux, ou changer redondance
+    neighbor <- generate_neighbor(placement_current, instance)
+      # neighbor = move a service to another (machine, region)
+      # or toggle encryption for a flow, or change redundancy
     cost_neighbor <- evaluate(instance, neighbor)
 
     delta = cost_neighbor - cost_current
 
     if cost_neighbor < cost_current :
-      # toujours accepter amélioration
+      # always accept improvement
       placement_current <- neighbor
       cost_current <- cost_neighbor
       if cost_neighbor < cost_best :
-        placement_best <- copie(neighbor)
+        placement_best <- copy(neighbor)
         cost_best <- cost_neighbor
     else :
-      # accepter avec probabilité exp(-delta / T)
+      # accept with probability exp(-delta / T)
       prob = exp(-delta / T)
       if random() < prob :
         placement_current <- neighbor
         cost_current <- cost_neighbor
 
-  T <- T * alpha  # refroidissement
+  T <- T * alpha  # cooling
 
-Retourner placement_best
-
+Return placement_best
 ```
 
-Complexité : **O(k × n)**  
-(k = nombre d’itérations, n = services)
+Complexity: **O(k × n)**  
+(k = number of iterations, n = services)
 
 ---
 
-### 3️ Algorithme Génétique (Genetic Algorithm)
+### 3️ Genetic Algorithm
 
-#### Justification du choix
-Les algorithmes génétiques permettent une **exploration globale** de l’espace de solutions grâce à la combinaison (croisement) et à la mutation de plusieurs individus.  
-Ils sont efficaces pour les problèmes de grande dimension et multi-critères.
+#### Rationale
+Genetic algorithms allow **global exploration** of the solution space through combination (crossover) and mutation of multiple individuals.  
+They are effective for large-scale, multi-criteria problems.
 
-#### Description et pseudo-code
+#### Description and pseudo-code
 
 ```text
-Entrée : instance, evaluate
-Paramètres : pop_size, generations, elite_count, mutation_rate
+Input : instance, evaluate
+Parameters : pop_size, generations, elite_count, mutation_rate
 
-Fonction GeneticAlgorithm(instance):
-  # 1. Initialisation : créer une population d'individus (placements) aléatoires
+Function GeneticAlgorithm(instance):
+  # 1. Initialization : create a population of random individuals (placements)
   population <- [random_individual(instance) for i in 1..pop_size]
-  évaluer chaque individu -> fitness = cost (plus petit = meilleur)
+  evaluate each individual -> fitness = cost (lower = better)
 
-  Pour g de 1 à generations :
-    # 2. Sélection : garder les meilleurs (élitisme) + sélectionner parents pour reproduction
-    trier population par fitness croissante
-    new_population <- meilleurs elite_count individus (é élite)
+  For g from 1 to generations :
+    # 2. Selection : keep the best (elitism) + select parents for reproduction
+    sort population by increasing fitness
+    new_population <- best elite_count individuals (elite)
 
-    # 3. Reproduction : produire des enfants jusqu'à pop_size
-    tant que len(new_population) < pop_size :
-      parent1 <- sélection(parent pool)   # ex : tournoi
-      parent2 <- sélection(parent pool)
-      enfant <- crossover(parent1, parent2)
-      mutate(enfant) avec probabilité mutation_rate
-      ajouter enfant à new_population
+    # 3. Reproduction : produce children until pop_size
+    while len(new_population) < pop_size :
+      parent1 <- selection(parent pool)   # e.g.: tournament
+      parent2 <- selection(parent pool)
+      child <- crossover(parent1, parent2)
+      mutate(child) with probability mutation_rate
+      add child to new_population
 
     population <- new_population
-    évaluer population (fitness)
-    mettre à jour best global si trouvé amélioration
+    evaluate population (fitness)
+    update global best if improved
 
-  Retourner meilleur individu (placement) et son coût
+  Return best individual (placement) and its cost
 ```
 
-Complexité : **O(pop × gen × e)**  
-(pop = taille de la population, gen = nb de générations, e = evaluate)
+Complexity: **O(pop × gen × e)**  
+(pop = population size, gen = number of generations, e = evaluate)
 
 ---
 
-## Phase 6 – Comparaison et visualisation  
+## Phase 6 – Comparison and visualization  
 
-###  Objectif  
-Comparer la performance des algorithmes sur une même instance :  
-- coût final,  
-- temps d’exécution,  
+###  Objective  
+Compare the performance of algorithms on the same instance:  
+- final cost,  
+- execution time,  
 
 ### 📁 `utils/run_experiment.py`
-Exécute un algorithme, mesure le temps et renvoie un dictionnaire de résultats uniformes.  
+Runs an algorithm, measures time and returns a uniform results dictionary.  
 
 ### 📁 `utils/visualization.py`
-- `plot_comparison_cout(df)` → barplot comparatif des coûts.  
-- `plot_comparison_temps(df)` → barplot comparatif des temps d'exécuttion. 
+- `plot_comparison_cout(df)` → comparative barplot of costs.  
+- `plot_comparison_temps(df)` → comparative barplot of execution times. 
 
 ---
 
-## Phase 7 – Tests unitaires  
+## Phase 7 – Unit tests  
 
-Les tests sont dans `tests/` et vérifient :
-- la structure des données (`test_data_model.py`),
-- la cohérence des coûts (`test_evaluate.py`),
-- la génération d’instances (`test_generate_instances.py`),
-- la validité des solutions (`test_greedy.py`, `test_simulated_annealing.py`, `test_genetic.py`).
+Tests are in `tests/` and verify:
+- data structures (`test_data_model.py`),
+- cost consistency (`test_evaluate.py`),
+- instance generation (`test_generate_instances.py`),
+- solution validity (`test_greedy.py`, `test_simulated_annealing.py`, `test_genetic.py`).
 
-Exécution :
+Run:
 ```bash
 python -m pytest -v
 ```
 
-Exemple de sortie :
+Example output:
 ```
 collected 7 items
 
@@ -366,172 +364,172 @@ tests/test_simulated_annealing.py::test_simulated_annealing_runs PASSED    [100%
 
 ---
 
-## Phase 8 – Résultats et comparaison
+## Phase 8 – Results and comparison
 
-## 📈 Résultats expérimentaux 
-Pour une instance : nb_services=300, nb_regions=140, nb_machines=150
+## 📈 Experimental results 
+For an instance: nb_services=300, nb_regions=140, nb_machines=150
 
-| Algorithme | Coût total | Temps (s) |
+| Algorithm | Total cost | Time (s) |
 |-------------|-------------|-----------|
-| Baseline aléatoire | 284491.504587 | 0.000 |
+| Random baseline | 284491.504587 | 0.000 |
 | Greedy | 263399.268650 | 57.816 |
-| Recuit simulé | 129678.486697 | 60.909 |
-| Algorithme génétique | 205734.048572 | 1.342 |
+| Simulated Annealing | 129678.486697 | 60.909 |
+| Genetic Algorithm | 205734.048572 | 1.342 |
 
 
-![Comparaison des coûts](/results/Figure_1_nb_services=300_nb_regions=140_nb_machines=150.png)
-![Comparaison du temps d'exéc](/results/Figure_2_nb_services=300_nb_regions=140_nb_machines=150.png)
+![Cost comparison](/results/Figure_1_nb_services=300_nb_regions=140_nb_machines=150.png)
+![Execution time comparison](/results/Figure_2_nb_services=300_nb_regions=140_nb_machines=150.png)
 
 ---
-Et pour une instance : nb_services=500, nb_regions=120, nb_machines=200
+And for an instance: nb_services=500, nb_regions=120, nb_machines=200
 
-| Algorithme | Coût total | Temps (s) |
+| Algorithm | Total cost | Time (s) |
 |-------------|-------------|-----------|
-| Baseline aléatoire | 464363.203794 | 0.001 |
+| Random baseline | 464363.203794 | 0.001 |
 | Greedy | 432593.335044 | 145.671 |
-| Recuit simulé | 269491.114653 | 167.845 |
-| Algorithme génétique | 371297.544809 | 2.599 |
+| Simulated Annealing | 269491.114653 | 167.845 |
+| Genetic Algorithm | 371297.544809 | 2.599 |
 
-![Comparaison des coûts](/results/Figure_1_nb_services=500_nb_regions=120_nb_machines=200.png)
-![Comparaison du temps d'exéc](/results/Figure_2_nb_services=500_nb_regions=120_nb_machines=200.png)
+![Cost comparison](/results/Figure_1_nb_services=500_nb_regions=120_nb_machines=200.png)
+![Execution time comparison](/results/Figure_2_nb_services=500_nb_regions=120_nb_machines=200.png)
 ---
-## 📈 Analyse des résultats
-La première remarque essentielle est qu’il est nécessaire de remplacer les fonctions « boîtes noires » utilisées pour le calcul des coûts par leurs véritables implémentations, afin d’obtenir une estimation plus réaliste des coûts partiels et du coût total. En effet, dans la version actuelle, ces fonctions ne sont que des placeholders permettant simplement d’exécuter et de tester les algorithmes, ce qui ne fournit pas des valeurs de coûts exactes.
+## 📈 Analysis of results
+The first essential remark is that the “black box” functions used for cost calculation must be replaced with their real implementations to obtain a more realistic estimate of partial costs and the total cost. Indeed, in the current version, these functions are only placeholders allowing the algorithms to run and be tested, which does not provide exact cost values.
 
-Par conséquent, les résultats présentés ne constituent qu’un aperçu approximatif de ce que l’on pourrait obtenir, sans pour autant refléter fidèlement les différences réelles entre les coûts issus des solutions de chaque algorithme.
+Therefore, the results presented only provide an approximate picture of what one might obtain, without faithfully reflecting the real differences between the costs produced by each algorithm’s solutions.
 
-Néanmoisn, les résultats montrent une amélioration nette du coût total avec les méthodes stochastiques.
+Nevertheless, the results show a clear improvement in total cost with stochastic methods.
 
-## Analyse du temps d'exécution
-En ce qui concerne le temps d’exécution, on peut observer que les algorithmes Greedy et Recuit simulé nécessitent un temps de calcul plus important, d’environ 2 à 3 minutes pour le traitement de 500 à 1000 services à affecter.
-En revanche, l’algorithme génétique est nettement plus rapide, avec un temps d’exécution de seulement 2 à 3 secondes, tout en produisant des résultats de coût proches de ceux obtenus par le Recuit simulé.
+## Execution time analysis
+Regarding execution time, we can observe that the Greedy and Simulated Annealing algorithms require longer computation times, around 2 to 3 minutes for processing 500 to 1000 services to assign.
+In contrast, the Genetic Algorithm is significantly faster, with an execution time of only 2 to 3 seconds, while producing cost results close to those obtained by Simulated Annealing.
 
-Cette différence de performance s’explique par la complexité algorithmique propre à chaque méthode. Le Recuit simulé repose sur un processus itératif de recherche locale nécessitant de nombreuses évaluations successives de solutions, tandis que l’algorithme génétique exploite la recombinaison de solutions au sein d’une population, ce qui permet d’explorer efficacement l’espace de recherche tout en limitant le nombre total d’itérations. Quant à la méthode Greedy, bien que simple dans son principe, elle peut devenir coûteuse lorsqu’elle doit évaluer plusieurs choix possibles à chaque étape pour de grandes instances du problème.
+This performance difference can be explained by each method’s algorithmic complexity. Simulated Annealing relies on an iterative local search process requiring many successive solution evaluations, while the Genetic Algorithm exploits recombination of solutions within a population, which allows efficient exploration of the search space while limiting the total number of iterations. As for the Greedy method, although simple in principle, it can become costly when it must evaluate multiple possible choices at each step for large problem instances.
 
 ---
 
-## Phase 9 – Analyse de sensibilité des paramètres
+## Phase 9 – Sensitivity analysis of parameters
 
-## Recuit simulé (Simulated Annealing)
+## Simulated Annealing
 
-### **Figure 1 – Heatmap : Influence de T₀ et α sur le coût moyen**
-![Heatmap Recuit Simulé](/results/Figure_1.png)
-La première figure illustre la variation du coût moyen obtenu en fonction de la **température initiale (T₀)** et du **facteur de refroidissement (α)**.  
-On observe que :
-- Une **température initiale trop basse (T₀ = 500)** donne souvent des coûts élevés : l’algorithme explore moins bien l’espace de recherche et risque de rester bloqué dans un minimum local.  
-- Une **valeur intermédiaire ou élevée de T₀ (1000–2000)** combinée à un **facteur α ≈ 0.85–0.9** donne les **meilleurs compromis coût/temps**.  
-- Des valeurs de α trop faibles (0.8) refroidissent trop rapidement le système, limitant l’exploration et dégradant la qualité des solutions.
+### **Figure 1 – Heatmap: Influence of T₀ and α on average cost**
+![Simulated Annealing Heatmap](/results/Figure_1.png)
+The first figure illustrates the variation of the average cost obtained as a function of the **initial temperature (T₀)** and the **cooling factor (α)**.  
+We observe that:
+- A **too low initial temperature (T₀ = 500)** often yields high costs: the algorithm explores the search space less and risks getting stuck in a local minimum.  
+- An **intermediate or high value of T₀ (1000–2000)** combined with a **factor α ≈ 0.85–0.9** provides the **best cost/time trade-offs**.  
+- Values of α that are too low (0.8) cool the system too quickly, limiting exploration and degrading solution quality.
 
 ✅ **Conclusion :**
-Le recuit simulé est sensible au couple *(T₀, α)*.  
-Un bon équilibre entre exploration et exploitation se situe typiquement autour de :
+Simulated annealing is sensitive to the pair *(T₀, α)*.  
+A good balance between exploration and exploitation typically lies around:
 ```
 T₀ ≈ 1000 – 2000
 α ≈ 0.85 – 0.9
 ```
-Ces paramètres permettent une convergence plus douce et un coût moyen minimal.
+These parameters allow smoother convergence and minimal average cost.
 
 ---
 
-### **Figure 2 – Évolution du coût moyen en fonction de T₀**
-![Évolution du coût moyen en fonction de T₀](/results/Figure_2.png)
+### **Figure 2 – Evolution of average cost as a function of T₀**
+![Average cost vs T₀](/results/Figure_2.png)
 
-Cette courbe confirme la tendance précédente :  
-le coût moyen décroît nettement lorsque T₀ augmente de 500 à 1000, puis se stabilise au-delà de 1000.  
-Cela traduit une **amélioration initiale grâce à une exploration plus large**, suivie d’un **rendement marginal décroissant** quand la température devient trop haute.
+This curve confirms the previous trend:  
+the average cost decreases markedly when T₀ increases from 500 to 1000, then stabilizes beyond 1000.  
+This reflects an **initial improvement thanks to wider exploration**, followed by **diminishing returns** when the temperature becomes too high.
 
 ---
 
-## Algorithme génétique (Genetic Algorithm)
+## Genetic Algorithm
 
-### **Figure 3 – Heatmap : Influence de la taille de population et du taux de mutation**
-![Heatmap GA](/results/Figure_1_GA.png)
-La heatmap met en évidence deux observations :
-- Une **plus grande population (pop_size 20–30)** tend à améliorer la qualité du résultat (coût plus faible), car elle augmente la diversité génétique.  
-- Un **taux de mutation modéré (0.1)** donne souvent les meilleurs résultats :  
-  - Trop bas (0.05) → risque de stagnation prématurée,  
-  - Trop haut (0.2) → trop de perturbations, perte de convergence.  
+### **Figure 3 – Heatmap: Influence of population size and mutation rate**
+![GA Heatmap](/results/Figure_1_GA.png)
+The heatmap highlights two observations:
+- A **larger population (pop_size 20–30)** tends to improve result quality (lower cost), because it increases genetic diversity.  
+- A **moderate mutation rate (0.1)** often yields the best results:  
+  - Too low (0.05) → risk of premature stagnation,  
+  - Too high (0.2) → too much perturbation, loss of convergence.  
 
 ✅ **Conclusion :**
-Les meilleurs compromis sont atteints pour :
+Best trade-offs are reached for:
 ```
 pop_size ≈ 20–30
 mutation_rate ≈ 0.1
 ```
-Le modèle est donc plus stable avec une diversité génétique modérée et un taux de mutation équilibré.
+The model is thus more stable with moderate genetic diversity and a balanced mutation rate.
 
 ---
 
-### **Figure 4 – Évolution du coût moyen selon la taille de la population**
-![Évolution du coût moyen selon la taille de la population](/results/Figure_2_GA.png)
+### **Figure 4 – Evolution of average cost according to population size**
+![Average cost vs population size](/results/Figure_2_GA.png)
 
-Cette courbe illustre une **tendance décroissante du coût moyen** quand la population augmente.  
-Cela confirme que **plus de diversité dans la population initiale améliore la qualité moyenne des solutions**, bien que le temps de calcul augmente légèrement.
+This curve illustrates a **decreasing trend of average cost** as population increases.  
+This confirms that **more diversity in the initial population improves the average quality of solutions**, although computation time increases slightly.
 
 ---
 
-## 🧩 Interprétation globale
+## 🧩 Overall interpretation
 
-| Algorithme | Paramètres clés | Observation principale | Zone optimale |
+| Algorithm | Key parameters | Main observation | Optimal zone |
 |-------------|----------------|------------------------|----------------|
-| Recuit simulé | T₀, α | Trop faible → minimum local ; trop élevé → convergence lente | T₀ = 1000–2000 ; α = 0.85–0.9 |
-| Génétique | pop_size, mutation_rate | Trop faible → stagnation ; trop fort → instabilité | pop_size = 20–30 ; mutation_rate = 0.1 |
+| Simulated Annealing | T₀, α | Too low → local minimum ; too high → slow convergence | T₀ = 1000–2000 ; α = 0.85–0.9 |
+| Genetic | pop_size, mutation_rate | Too low → stagnation ; too high → instability | pop_size = 20–30 ; mutation_rate = 0.1 |
 
 ---
 
-## 💬 Conclusion générale
-- Le **recuit simulé** offre une convergence stable et rapide, mais dépend fortement du calibrage thermique.  
-- L’**algorithme génétique** est plus robuste aux variations de paramètres, mais nécessite une population suffisante pour garantir la diversité.  
-- Dans les deux cas, la sensibilité est modérée mais significative : un mauvais réglage peut multiplier le coût final par 1.3 à 1.5.  
-Ces résultats montrent qu’une **phase de tuning automatique** pourrait encore améliorer la performance globale du système.
+## 💬 General conclusion
+- **Simulated Annealing** offers stable and fast convergence, but depends heavily on thermal calibration.  
+- The **Genetic Algorithm** is more robust to parameter variations, but requires a sufficient population to ensure diversity.  
+- In both cases, sensitivity is moderate but significant: poor tuning can multiply the final cost by 1.3 to 1.5.  
+These results show that an **automatic tuning phase** could further improve the overall performance of the system.
 ---
-## ⚠️ Limites et perspectives  
+## ⚠️ Limits and perspectives  
 
-Plusieurs améliorations sont envisageables :  
+Several improvements are possible:  
 
-La première perspective et limite identifiée consiste à remplacer les fonctions « boîtes noires » utilisées pour le calcul des coûts par leurs véritables implémentations, afin d’obtenir une estimation plus réaliste des coûts partiels et du coût total. En effet, dans cette version, ces fonctions ne sont que des placeholders servant à exécuter et tester les algorithmes, ce qui ne permet pas d’obtenir des valeurs de coûts exactes.
-### 🔹 Sur le modèle
-- Intégrer des coûts **dynamiques** dépendant du trafic réel.  
-- Ajouter des contraintes **d’énergie et d’empreinte carbone**.  
-- Introduire la **migration de services** (placement dynamique dans le temps).  
+The first identified perspective and limitation is to replace the “black box” functions used for cost calculation with their real implementations in order to obtain a more realistic estimate of partial costs and the total cost. Indeed, in this version, these functions are only placeholders used to run and test the algorithms, which does not provide exact cost values.
+### 🔹 On the model
+- Integrate **dynamic** costs depending on real traffic.  
+- Add **energy and carbon footprint** constraints.  
+- Introduce **service migration** (dynamic placement over time).  
 
-### 🔹 Sur les algorithmes
-- Combiner Greedy + Recuit simulé en **algorithme hybride**.  
-- Tester d’autres métaheuristiques : **Tabu Search, Ant Colony, Particle Swarm Optimization**.  
-- Ajouter un module de **parallélisation** des évaluations de coût.  
+### 🔹 On the algorithms
+- Combine Greedy + Simulated Annealing in a **hybrid algorithm**.  
+- Test other metaheuristics: **Tabu Search, Ant Colony, Particle Swarm Optimization**.  
+- Add a **parallelization** module for cost evaluations.  
 
 
-Ces perspectives ouvrent la voie à un système d’optimisation plus robuste, intelligent et réaliste pour la gestion du placement cloud.
+These perspectives open the way to a more robust, intelligent and realistic optimization system for cloud placement management.
 
 ---
 
-## Comment exécuter le projet  
+## How to run the project  
 
 ```bash
 python main.py
 ```
 
-✅ Ce script :
-1. Génère une instance aléatoire,  
-2. Exécute les 4 algorithmes,  
-3. Compare les coûts et temps,  
-4. Affiche les placements et les graphiques.  
+✅ This script :
+1. Generates a random instance,  
+2. Runs the 4 algorithms,  
+3. Compares costs and times,  
+4. Displays placements and charts.  
 
 ---
 
-## Outils et dépendances  
+## Tools and dependencies  
 
-| Outil | Utilisation |
+| Tool | Use |
 |-------|--------------|
-| Python 3.10+ | Langage principal |
-| Pandas, Numpy | Analyse et comparaison des résultats |
-| Matplotlib, Seaborn | Visualisations |
-| Pytest | Tests unitaires |
-| GitHub | Versionnement et documentation |
+| Python 3.10+ | Main language |
+| Pandas, Numpy | Analysis and results comparison |
+| Matplotlib, Seaborn | Visualizations |
+| Pytest | Unit tests |
+| GitHub | Versioning and documentation |
 
 ---
 
-## Auteur & crédits  
+## Author & credits  
 
-**Projet réalisé par :** *Oumaima Ben*  
-Dans le cadre d’un projet d’optimisation et de modélisation cloud.  
+**Project carried out by:** *Oumaima Ben*  
+As part of a cloud optimization and modeling project.
